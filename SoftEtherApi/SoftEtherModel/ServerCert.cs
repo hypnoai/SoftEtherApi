@@ -6,4 +6,3 @@ namespace SoftEtherApi.SoftEtherModel
         public int Flag1;
     }
 }
-

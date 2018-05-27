@@ -19,21 +19,20 @@ namespace SoftEtherApi
             };
         }
 
-        public static  void SendHttpRequest(this SslStream socket, string method, string target, byte[] body, Dictionary<string, string> headers)
+        public static void SendHttpRequest(this SslStream socket, string method, string target, byte[] body,
+            Dictionary<string, string> headers)
         {
             var header = $"{method.ToUpper()} {target} HTTP/1.1\r\n";
 
-            foreach (var el in headers)
-            {
+            foreach (var el in headers) 
                 header += $"{el.Key}: {el.Value}\r\n";
-            }
-            
-            if(!header.Contains("Content-Length"))
+
+            if (!header.Contains("Content-Length"))
                 header += $"Content-Length: {body.Length}\r\n";
 
             socket.Write(Encoding.ASCII.GetBytes($"{header}\r\n"));
             socket.Write(body);
-            
+
             socket.Flush();
         }
 
@@ -49,8 +48,8 @@ namespace SoftEtherApi
             while (true)
             {
                 var headerLine = stream.ReadLine();
-                
-                if(string.IsNullOrEmpty(headerLine))
+
+                if (string.IsNullOrEmpty(headerLine))
                     break;
 
                 var (headerName, headerValue, _) = headerLine.Split(':').Select(m => m.Trim()).ToArray();
@@ -64,9 +63,7 @@ namespace SoftEtherApi
             var responseBody = new byte[responseLength];
             var bytesRead = 0;
             while (bytesRead < responseLength)
-            {
                 bytesRead += stream.Read(responseBody, bytesRead, responseLength - bytesRead);
-            }
 
 
             return new Dictionary<string, dynamic>

@@ -1,30 +1,28 @@
 using System;
-using System.Collections.Generic;
 
 namespace SoftEtherApi.SoftEtherModel
 {
     public class HubUserList : BaseSoftEtherModel<HubUserList>
     {
-        public List<int> AuthType;
-        public List<int> DenyAccess;
-        public List<long> ExRecvBroadcastBytes;
-        public List<long> ExRecvBroadcastCount;
-        public List<long> ExRecvUnicastBytes;
-        public List<long> ExRecvUnicastCount;
-        public List<long> ExSendBroadcastBytes;
-        public List<long> ExSendBroadcastCount;
-        public List<long> ExSendUnicastBytes;
-        public List<long> ExSendUnicastCount;
-        public List<long> Expires;
-        public List<string> GroupName;
+        public int AuthType;
+        public int DenyAccess;
+        public long Expires;
+        public long ExRecvBroadcastBytes;
+        public long ExRecvBroadcastCount;
+        public long ExRecvUnicastBytes;
+        public long ExRecvUnicastCount;
+        public long ExSendBroadcastBytes;
+        public long ExSendBroadcastCount;
+        public long ExSendUnicastBytes;
+        public long ExSendUnicastCount;
+        public string GroupName;
         public string HubName;
-        public List<int> IsExpiresFilled;
-        public List<int> IsTrafficFilled;
-        public List<DateTime> LastLoginTime;
-        public List<string> Name;
-        public List<string> Note;
-        public List<int> NumLogin;
-        public List<string> Realname;
+        public int IsExpiresFilled;
+        public int IsTrafficFilled;
+        public DateTime LastLoginTime;
+        public string Name;
+        public string Note;
+        public int NumLogin;
+        public string Realname;
     }
 }
-

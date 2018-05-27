@@ -12,32 +12,32 @@ namespace SoftEtherApi.Extensions
             return b;
         }
 
-        public static void WriteUInt16BE(this BinaryWriter binWriter, UInt16 val)
+        public static void WriteUInt16BE(this BinaryWriter binWriter, ushort val)
         {
             binWriter.Write(BitConverter.GetBytes(val).Reverse());
         }
 
-        public static void WriteInt16BE(this BinaryWriter binWriter, Int16 val)
+        public static void WriteInt16BE(this BinaryWriter binWriter, short val)
         {
             binWriter.Write(BitConverter.GetBytes(val).Reverse());
         }
 
-        public static void WriteUInt32BE(this BinaryWriter binWriter, UInt32 val)
-        {
-            binWriter.Write(BitConverter.GetBytes(val).Reverse());
-        }
-        
-        public static void WriteUInt64BE(this BinaryWriter binWriter, UInt64 val)
+        public static void WriteUInt32BE(this BinaryWriter binWriter, uint val)
         {
             binWriter.Write(BitConverter.GetBytes(val).Reverse());
         }
 
-        public static void WriteInt32BE(this BinaryWriter binWriter, Int32 val)
+        public static void WriteUInt64BE(this BinaryWriter binWriter, ulong val)
         {
             binWriter.Write(BitConverter.GetBytes(val).Reverse());
         }
-        
-        public static void WriteInt64BE(this BinaryWriter binWriter, Int64 val)
+
+        public static void WriteInt32BE(this BinaryWriter binWriter, int val)
+        {
+            binWriter.Write(BitConverter.GetBytes(val).Reverse());
+        }
+
+        public static void WriteInt64BE(this BinaryWriter binWriter, long val)
         {
             binWriter.Write(BitConverter.GetBytes(val).Reverse());
         }

@@ -11,6 +11,7 @@ namespace SoftEtherApi.SoftEtherModel
         public long CurrentTick;
         public DateTime CurrentTime;
         public long FreeMemory;
+        public long FreePhys;
         public int NumGroups;
         public int NumHubDynamic;
         public int NumHubStandalone;
@@ -39,6 +40,5 @@ namespace SoftEtherApi.SoftEtherModel
         public long TotalPhys;
         public long UsedMemory;
         public long UsedPhys;
-        public long FreePhys;
     }
 }

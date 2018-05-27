@@ -4,6 +4,7 @@ namespace SoftEtherApi.SoftEtherModel
 {
     public class ServerInfo : BaseSoftEtherModel<ServerInfo>
     {
+        public string KernelName;
         public string OsProductName;
         public int OsServicePack;
         public string OsSystemName;
@@ -19,6 +20,5 @@ namespace SoftEtherApi.SoftEtherModel
         public int ServerType;
         public int ServerVerInt;
         public string ServerVersionString;
-        public string KernelName;
     }
 }

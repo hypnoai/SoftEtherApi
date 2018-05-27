@@ -24,35 +24,35 @@ namespace SoftEtherApi.Api
             return ServerStatus.Deserialize(rawData);
         }
 
-        public PortListeners GetPortListeners()
+        public SoftEtherList<PortListenerList> GetPortListenerList()
         {
             var rawData = _softEther.CallMethod("EnumListener");
-            return PortListeners.Deserialize(rawData);
+            return PortListenerList.DeserializeMany(rawData);
         }
-        
+
         public ServerCert GetCert()
         {
             var rawData = _softEther.CallMethod("GetServerCert");
             return ServerCert.Deserialize(rawData);
         }
-        
+
         public ServerCipher GetCipher()
         {
             var rawData = _softEther.CallMethod("GetServerCipher");
             return ServerCipher.Deserialize(rawData);
         }
-        
-        public ConnectionList GetConnections()
+
+        public SoftEtherList<ConnectionList> GetConnectionList()
         {
             var rawData = _softEther.CallMethod("EnumConnection");
-            return ConnectionList.Deserialize(rawData);
+            return ConnectionList.DeserializeMany(rawData);
         }
-        
+
         public ConnectionInfo GetConnectionInfo(string name)
         {
             var requestData =
                 new Dictionary<string, (string, dynamic[])> {{"Name", ("string", new dynamic[] {name})}};
-            
+
             var rawData = _softEther.CallMethod("GetConnectionInfo", requestData);
             return ConnectionInfo.Deserialize(rawData);
         }

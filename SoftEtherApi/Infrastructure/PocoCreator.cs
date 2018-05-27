@@ -9,7 +9,8 @@ namespace SoftEtherApi.Infrastructure
 {
     public class PocoCreator
     {
-        public static void GenerateSourceFile(string className, Dictionary<string, List<dynamic>> list)
+        public static void GenerateSourceFile(string className, Dictionary<string, List<dynamic>> list,
+            bool containsMany = false)
         {
             var fileBuffer = new StringBuilder();
             fileBuffer.AppendLine(@"using System;");
@@ -30,7 +31,7 @@ namespace SoftEtherApi.Infrastructure
                 if (fieldName.Contains("Time") || fieldName.Contains("Date"))
                     fieldTypeName = "DateTime";
 
-                if (el.Value.Count > 1)
+                if (el.Value.Count > 1 && !containsMany)
                 {
                     usingLists = true;
                     fieldTypeName = $"List<{fieldTypeName}>";
@@ -41,7 +42,7 @@ namespace SoftEtherApi.Infrastructure
 
             if (usingLists)
                 fileBuffer.Insert(0, $"using System.Collections.Generic;{Environment.NewLine}");
-            
+
             fileBuffer.AppendLine(@"    }");
             fileBuffer.AppendLine(@"}");
             fileBuffer.AppendLine();

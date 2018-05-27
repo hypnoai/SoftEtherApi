@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,12 +13,12 @@ namespace SoftEtherApi
         {
             return BitConverter.GetBytes(val).Reverse().ToArray();
         }
-        
+
         public static int DeserializeInt(byte[] val)
         {
             return BitConverter.ToInt32(val.Reverse().ToArray(), 0);
         }
-        
+
         public static byte[] Serialize(Dictionary<string, (string, dynamic[])> list)
         {
             var memStream = new MemoryStream();
@@ -39,20 +39,16 @@ namespace SoftEtherApi
                     {
                         writer.WriteInt32BE(0);
                         writer.WriteInt32BE(el.Value.Item2.Length);
-                        foreach (var t in el.Value.Item2)
-                        {
-                            writer.WriteInt32BE((Int32)t);
-                        }
+                        foreach (var t in el.Value.Item2) 
+                            writer.WriteInt32BE((int) t);
                         break;
                     }
                     case "int64":
                     {
                         writer.WriteInt32BE(4);
                         writer.WriteInt32BE(el.Value.Item2.Length);
-                        foreach (var t in el.Value.Item2)
-                        {
-                            writer.WriteInt64BE((Int64)t);
-                        }
+                        foreach (var t in el.Value.Item2) 
+                            writer.WriteInt64BE((long) t);
                         break;
                     }
                     case "string":
@@ -61,7 +57,7 @@ namespace SoftEtherApi
                         writer.WriteInt32BE(el.Value.Item2.Length);
                         foreach (var t in el.Value.Item2)
                         {
-                            var tBytes = Encoding.ASCII.GetBytes((string)t);
+                            var tBytes = Encoding.ASCII.GetBytes((string) t);
                             writer.WriteInt32BE(tBytes.Length);
                             writer.Write(tBytes);
                         }
@@ -73,7 +69,7 @@ namespace SoftEtherApi
                         writer.WriteInt32BE(el.Value.Item2.Length);
                         foreach (var t in el.Value.Item2)
                         {
-                            var tBytes = Encoding.UTF8.GetBytes((string)t);
+                            var tBytes = Encoding.UTF8.GetBytes((string) t);
                             writer.WriteInt32BE(tBytes.Length);
                             writer.Write(tBytes);
                         }
@@ -86,13 +82,12 @@ namespace SoftEtherApi
                         writer.WriteInt32BE(el.Value.Item2.Length);
                         foreach (var t in el.Value.Item2)
                         {
-                            writer.WriteInt32BE(((byte[])t).Length);
-                            writer.Write((byte[])t);
+                            writer.WriteInt32BE(((byte[]) t).Length);
+                            writer.Write((byte[]) t);
                         }
                         break;
                     }
                 }
-
             }
 
             return memStream.ToArray();
@@ -102,7 +97,7 @@ namespace SoftEtherApi
         {
             var memStream = new MemoryStream(body, false);
             var reader = new BinaryReader(memStream);
-            
+
             var count = reader.ReadInt32BE();
 
             var res = new Dictionary<string, List<dynamic>>();
@@ -151,7 +146,6 @@ namespace SoftEtherApi
 
                 res.Add(key, list);
             }
-            
             return res;
         }
     }

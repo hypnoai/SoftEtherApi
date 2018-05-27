@@ -1,10 +1,7 @@
-using SoftEtherApi.SoftEtherModel;
-
-namespace SoftetherApi.SoftEtherModel
+namespace SoftEtherApi.SoftEtherModel
 {
     public class AuthResult : BaseSoftEtherModel<AuthResult>
     {
         public byte[] pencore;
     }
 }
-

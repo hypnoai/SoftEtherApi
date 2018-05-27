@@ -22,8 +22,7 @@ namespace SoftEtherApi.SoftEtherModel
         public long SendBroadcastBytes;
         public long SendBroadcastCount;
         public long SendUnicastBytes;
-        public DateTime UpdatedTime;
         public long SendUnicastCount;
+        public DateTime UpdatedTime;
     }
 }
-

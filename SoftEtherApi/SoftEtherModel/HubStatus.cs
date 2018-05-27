@@ -12,6 +12,7 @@ namespace SoftEtherApi.SoftEtherModel
         public int NumAccessLists;
         public int NumGroups;
         public int NumIpTables;
+        public int NumLogin;
         public int NumMacTables;
         public int NumSessions;
         public int NumSessionsBridge;
@@ -27,6 +28,5 @@ namespace SoftEtherApi.SoftEtherModel
         public long SendBroadcastCount;
         public long SendUnicastBytes;
         public long SendUnicastCount;
-        public int NumLogin;
     }
 }

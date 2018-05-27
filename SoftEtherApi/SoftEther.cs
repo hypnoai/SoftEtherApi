@@ -4,9 +4,9 @@ using System.Linq;
 using System.Net.Security;
 using System.Net.Sockets;
 using System.Text;
-using SoftetherApi.SoftEtherModel;
 using SoftEtherApi.Api;
 using SoftEtherApi.Infrastructure;
+using SoftEtherApi.SoftEtherModel;
 
 namespace SoftEtherApi
 {

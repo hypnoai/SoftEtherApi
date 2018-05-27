@@ -21,4 +21,3 @@ namespace SoftEtherApi.SoftEtherModel
         public int Type;
     }
 }
-

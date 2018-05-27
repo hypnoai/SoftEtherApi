@@ -12,4 +12,3 @@ namespace SoftEtherApi.SoftEtherModel
         public int SecurityLogSwitchType;
     }
 }
-

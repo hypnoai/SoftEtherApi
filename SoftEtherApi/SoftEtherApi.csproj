@@ -64,11 +64,12 @@
     <Compile Include="SoftEtherModel\BaseSoftEtherModel.cs" />
     <Compile Include="SoftEtherModel\HubUser.cs" />
     <Compile Include="SoftEtherModel\HubUserList.cs" />
-    <Compile Include="SoftEtherModel\PortListeners.cs" />
+    <Compile Include="SoftEtherModel\PortListenerList.cs" />
     <Compile Include="SoftEtherModel\ServerCert.cs" />
     <Compile Include="SoftEtherModel\ServerCipher.cs" />
     <Compile Include="SoftEtherModel\ServerInfo.cs" />
     <Compile Include="SoftEtherModel\ServerStatus.cs" />
+    <Compile Include="SoftEtherModel\SoftEtherList.cs" />
     <Compile Include="SoftEtherNetwork.cs" />
     <Compile Include="SoftEtherProtocol.cs" />
   </ItemGroup>

@@ -16,4 +16,3 @@ namespace SoftEtherApi.SoftEtherModel
         public long SendUnicastCount;
     }
 }
-

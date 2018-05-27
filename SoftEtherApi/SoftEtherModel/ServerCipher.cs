@@ -5,4 +5,3 @@ namespace SoftEtherApi.SoftEtherModel
         public string String;
     }
 }
-

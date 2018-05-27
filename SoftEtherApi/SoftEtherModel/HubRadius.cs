@@ -4,9 +4,8 @@ namespace SoftEtherApi.SoftEtherModel
     {
         public string HubName;
         public int RadiusPort;
+        public int RadiusRetryInterval;
         public string RadiusSecret;
         public string RadiusServerName;
-        public int RadiusRetryInterval;
     }
 }
-

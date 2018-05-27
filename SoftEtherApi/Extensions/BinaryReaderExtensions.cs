@@ -13,34 +13,34 @@ namespace SoftEtherApi.Extensions
             return b;
         }
 
-        public static UInt16 ReadUInt16BE(this BinaryReader binRdr)
+        public static ushort ReadUInt16BE(this BinaryReader binRdr)
         {
-            return BitConverter.ToUInt16(binRdr.ReadBytesRequired(sizeof(UInt16)).Reverse(), 0);
+            return BitConverter.ToUInt16(binRdr.ReadBytesRequired(sizeof(ushort)).Reverse(), 0);
         }
 
-        public static Int16 ReadInt16BE(this BinaryReader binRdr)
+        public static short ReadInt16BE(this BinaryReader binRdr)
         {
-            return BitConverter.ToInt16(binRdr.ReadBytesRequired(sizeof(Int16)).Reverse(), 0);
+            return BitConverter.ToInt16(binRdr.ReadBytesRequired(sizeof(short)).Reverse(), 0);
         }
 
-        public static UInt32 ReadUInt32BE(this BinaryReader binRdr)
+        public static uint ReadUInt32BE(this BinaryReader binRdr)
         {
-            return BitConverter.ToUInt32(binRdr.ReadBytesRequired(sizeof(UInt32)).Reverse(), 0);
+            return BitConverter.ToUInt32(binRdr.ReadBytesRequired(sizeof(uint)).Reverse(), 0);
         }
 
-        public static UInt64 ReadUInt64BE(this BinaryReader binRdr)
+        public static ulong ReadUInt64BE(this BinaryReader binRdr)
         {
-            return BitConverter.ToUInt64(binRdr.ReadBytesRequired(sizeof(UInt64)).Reverse(), 0);
+            return BitConverter.ToUInt64(binRdr.ReadBytesRequired(sizeof(ulong)).Reverse(), 0);
         }
 
-        public static Int32 ReadInt32BE(this BinaryReader binRdr)
+        public static int ReadInt32BE(this BinaryReader binRdr)
         {
-            return BitConverter.ToInt32(binRdr.ReadBytesRequired(sizeof(Int32)).Reverse(), 0);
+            return BitConverter.ToInt32(binRdr.ReadBytesRequired(sizeof(int)).Reverse(), 0);
         }
 
-        public static Int64 ReadInt64BE(this BinaryReader binRdr)
+        public static long ReadInt64BE(this BinaryReader binRdr)
         {
-            return BitConverter.ToInt64(binRdr.ReadBytesRequired(sizeof(Int64)).Reverse(), 0);
+            return BitConverter.ToInt64(binRdr.ReadBytesRequired(sizeof(long)).Reverse(), 0);
         }
 
         public static string ReadStringBE(this BinaryReader binRdr, int len)
