@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Security;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using SoftEtherApi.Api;
 using SoftEtherApi.Infrastructure;
 using SoftEtherApi.SoftEtherModel;
@@ -31,6 +32,7 @@ namespace SoftEtherApi
             ServerApi = new SoftEtherServer(this);
             HubApi = new SoftEtherHub(this);
         }
+
         public void Dispose()
         {
             _rawSocket.Dispose();
@@ -142,7 +144,15 @@ namespace SoftEtherApi
             var dataLengthAsInt = SoftEtherProtocol.DeserializeInt(dataLength);
             var responseBuffer = new byte[dataLengthAsInt];
 
-            bytesRead = _socket.Read(responseBuffer, 0, dataLengthAsInt);
+            bytesRead = 0;
+            for (var i = 0; i < 10; i++) //retrie 10 times to read all data
+            {
+                bytesRead += _socket.Read(responseBuffer, bytesRead, dataLengthAsInt - bytesRead);
+                if (bytesRead == dataLengthAsInt)
+                    break;
+                Thread.Sleep(50);
+            }
+
             if (bytesRead != dataLengthAsInt)
                 throw new Exception("read less than dataLength");
 
