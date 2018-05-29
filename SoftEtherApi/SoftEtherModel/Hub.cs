@@ -4,7 +4,7 @@ namespace SoftEtherApi.SoftEtherModel
     {
         public byte[] HashedPassword;
         public string HubName;
-        public uint  HubType;
+        public HubType  HubType;
         public uint  MaxSession;
         public uint  NoEnum;
         public uint  Online;

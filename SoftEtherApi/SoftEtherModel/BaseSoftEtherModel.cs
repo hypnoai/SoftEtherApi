@@ -119,6 +119,11 @@ namespace SoftEtherApi.SoftEtherModel
             {
                 return Enum.ToObject(typeof(SoftEtherError), val);
             }
+            
+            if (valType == typeof(HubType))
+            {
+                return Enum.ToObject(typeof(HubType), val);
+            }
 
             return val;
         }

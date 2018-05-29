@@ -14,7 +14,7 @@ namespace SoftEtherApi.SoftEtherModel
         public ulong ExSendUnicastBytes;
         public ulong ExSendUnicastCount;
         public string HubName;
-        public uint  HubType;
+        public HubType  HubType;
         public uint  IsTrafficFilled;
         public DateTime LastCommTime;
         public DateTime LastLoginTime;

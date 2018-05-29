@@ -147,6 +147,26 @@ namespace SoftEtherApi.Api
             var rawData = _softEther.CallMethod("DeleteHub", requestData);
             return Hub.Deserialize(rawData);
         }
+        
+        public Hub Create(string name, string password, bool online, bool noAnonymousEnumUser = true, HubType hubType = HubType.Standalone, int maxSession = 0)
+        {
+            var (hashedPw, securePw) = _softEther.CreateHashAnSecure(password);
+            
+            var requestData =
+                new Dictionary<string, (string, object[])>
+                {
+                    {"HubName", ("string", new object[] {name})},
+                    {"HashedPassword", ("raw", new object[] {hashedPw})},
+                    {"SecurePassword", ("raw", new object[] {securePw})},
+                    {"Online", ("int", new object[] {online})},
+                    {"MaxSession", ("int", new object[] {maxSession})},
+                    {"NoEnum", ("int", new object[] {noAnonymousEnumUser})},
+                    {"HubType", ("int", new object[] {hubType})}
+                };
+
+            var rawData = _softEther.CallMethod("CreateHub", requestData);
+            return Hub.Deserialize(rawData);
+        }
 
         public HubGroup CreateGroup(string hubName, string name, string realName = null, string note = null)
         {
@@ -193,7 +213,7 @@ namespace SoftEtherApi.Api
         public HubUser CreateUser(string hubName, string name, string password, string groupName = null,
             string realName = null, string note = null, DateTime? expireTime = null)
         {
-            var (hashedPw, securePw) = CreateHashAndNtLm(name, password);
+            var (hashedPw, securePw) = _softEther.CreateHashAndNtLm(name, password);
 
             var expireTimeValue = expireTime.HasValue ? (long?) SoftEther.DateTimeToLong(expireTime.Value) : null;
 
@@ -277,19 +297,8 @@ namespace SoftEtherApi.Api
         public HubUser SetUserPassword(string hubName, string name, string password)
         {
             var user = GetUser(hubName, name);
-            (user.HashedKey, user.NtLmSecureHash) = CreateHashAndNtLm(name, password);
+            (user.HashedKey, user.NtLmSecureHash) = _softEther.CreateHashAndNtLm(name, password);
             return SetUser(hubName, user);
-        }
-
-        public (byte[], byte[]) CreateHashAndNtLm(string name, string password)
-        {
-            var hashedPwCreator = new SHA0();
-            hashedPwCreator.Update(Encoding.ASCII.GetBytes(password));
-            var hashedPw = hashedPwCreator.Update(Encoding.ASCII.GetBytes(name.ToUpper())).Digest();
-
-            var securePwCreator = new MD4();
-            var securePw = securePwCreator.Update(Encoding.Unicode.GetBytes(password)).Digest();
-            return (hashedPw, securePw);
         }
     }
 }

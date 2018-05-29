@@ -83,12 +83,7 @@ namespace SoftEtherApi
             if (!string.IsNullOrWhiteSpace(hubName))
                 authPayload.Add("hubname", ("string", new object[] {hubName}));
 
-            var hashedPwCreator = new SHA0();
-            var hashedPw = hashedPwCreator.Update(Encoding.ASCII.GetBytes(password)).Digest();
-
-            var securePwCreator = new SHA0();
-            securePwCreator.Update(hashedPw);
-            var securePw = securePwCreator.Update(RandomFromServer).Digest();
+            var (hashedPw, securePw) = CreateHashAnSecure(password);
 
             authPayload.Add("secure_password", ("raw", new object[] {securePw}));
 
@@ -159,6 +154,29 @@ namespace SoftEtherApi
             var response = SoftEtherProtocol.Deserialize(responseBuffer);
 
             return response;
+        }
+        
+        public (byte[], byte[]) CreateHashAndNtLm(string name, string password)
+        {
+            var hashedPwCreator = new SHA0();
+            hashedPwCreator.Update(Encoding.ASCII.GetBytes(password));
+            var hashedPw = hashedPwCreator.Update(Encoding.ASCII.GetBytes(name.ToUpper())).Digest();
+
+            var securePwCreator = new MD4();
+            var securePw = securePwCreator.Update(Encoding.Unicode.GetBytes(password)).Digest();
+            return (hashedPw, securePw);
+        }
+        
+        public (byte[], byte[]) CreateHashAnSecure(string password)
+        {
+            var hashedPwCreator = new SHA0();
+            var hashedPw = hashedPwCreator.Update(Encoding.ASCII.GetBytes(password)).Digest();
+
+            var securePwCreator = new SHA0();
+            securePwCreator.Update(hashedPw);
+            var securePw = securePwCreator.Update(RandomFromServer).Digest();
+            
+            return (hashedPw, securePw);
         }
     }
 }

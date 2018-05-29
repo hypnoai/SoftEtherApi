@@ -6,7 +6,7 @@ namespace SoftEtherApi.SoftEtherModel
     {
         public DateTime CreatedTime;
         public string HubName;
-        public uint  HubType;
+        public HubType  HubType;
         public DateTime LastCommTime;
         public DateTime LastLoginTime;
         public uint  NumAccessLists;

@@ -49,6 +49,7 @@
     <Compile Include="SoftEtherModel\ConnectionInfo.cs" />
     <Compile Include="SoftEtherModel\ConnectionList.cs" />
     <Compile Include="SoftEtherModel\ConnectResult.cs" />
+    <Compile Include="SoftEtherModel\HubType.cs" />
     <Compile Include="SoftEtherModel\SoftEtherHttpResult.cs" />
     <Compile Include="SoftEtherModel\Hub.cs" />
     <Compile Include="SoftEtherModel\HubAccessList.cs" />
