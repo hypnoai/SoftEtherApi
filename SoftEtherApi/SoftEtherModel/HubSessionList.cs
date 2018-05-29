@@ -1,3 +1,5 @@
+using System.Net;
+
 namespace SoftEtherApi.SoftEtherModel
 {
     public class HubSessionList : BaseSoftEtherModel<HubSessionList>
@@ -8,7 +10,7 @@ namespace SoftEtherApi.SoftEtherModel
         public uint  CurrentNumTcp;
         public string Hostname;
         public string HubName;
-        public uint  Ip;
+        public IPAddress  Ip;
         public byte[] Ipipv6_array;
         public uint  Ipipv6_bool;
         public uint  Ipipv6_scope_id;

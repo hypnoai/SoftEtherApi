@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 
 namespace SoftEtherApi.SoftEtherModel
 {
@@ -102,6 +103,11 @@ namespace SoftEtherApi.SoftEtherModel
             if (valType == typeof(DateTime))
             {
                 return SoftEther.LongToDateTime(Convert.ToInt64(val ?? 0));
+            }
+
+            if (valType == typeof(IPAddress))
+            {
+                return new IPAddress((uint)val);
             }
 
             if (valType == typeof(bool))

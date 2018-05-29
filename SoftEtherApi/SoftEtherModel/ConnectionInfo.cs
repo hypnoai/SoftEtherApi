@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 
 namespace SoftEtherApi.SoftEtherModel
 {
@@ -9,7 +10,7 @@ namespace SoftEtherApi.SoftEtherModel
         public uint  ClientVer;
         public DateTime ConnectedTime;
         public string Hostname;
-        public uint  Ip;
+        public IPAddress  Ip;
         public byte[] Ipipv6_array;
         public uint  Ipipv6_bool;
         public uint  Ipipv6_scope_id;

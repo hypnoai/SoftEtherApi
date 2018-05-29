@@ -1,3 +1,5 @@
+using System.Net;
+
 namespace SoftEtherApi.SoftEtherModel
 {
     public class HubAccessList : BaseSoftEtherModel<HubAccessList>
@@ -7,14 +9,14 @@ namespace SoftEtherApi.SoftEtherModel
         public uint  CheckSrcMac;
         public uint  CheckTcpState;
         public uint  Delay;
-        public uint  DestIpAddress;
+        public IPAddress  DestIpAddress;
         public byte[] DestIpAddress6;
         public byte[] DestIpAddressipv6_array;
         public uint  DestIpAddressipv6_bool;
         public uint  DestIpAddressipv6_scope_id;
         public uint  DestPortEnd;
         public uint  DestPortStart;
-        public uint  DestSubnetMask;
+        public IPAddress  DestSubnetMask;
         public byte[] DestSubnetMask6;
         public byte[] DestSubnetMaskipv6_array;
         public uint  DestSubnetMaskipv6_bool;
@@ -33,7 +35,7 @@ namespace SoftEtherApi.SoftEtherModel
         public uint  Priority;
         public uint  Protocol;
         public string RedirectUrl;
-        public uint  SrcIpAddress;
+        public IPAddress  SrcIpAddress;
         public byte[] SrcIpAddress6;
         public byte[] SrcIpAddressipv6_array;
         public uint  SrcIpAddressipv6_bool;
@@ -42,7 +44,7 @@ namespace SoftEtherApi.SoftEtherModel
         public byte[] SrcMacMask;
         public uint  SrcPortEnd;
         public uint  SrcPortStart;
-        public uint  SrcSubnetMask;
+        public IPAddress  SrcSubnetMask;
         public byte[] SrcSubnetMask6;
         public byte[] SrcSubnetMaskipv6_array;
         public uint  SrcSubnetMaskipv6_bool;
