@@ -6,19 +6,19 @@ namespace SoftEtherApi.SoftEtherModel
     {
         public string KernelName;
         public string OsProductName;
-        public int OsServicePack;
+        public uint  OsServicePack;
         public string OsSystemName;
-        public int OsType;
+        public uint  OsType;
         public string OsVendorName;
         public string OsVersion;
         public DateTime ServerBuildDate;
         public string ServerBuildInfoString;
-        public int ServerBuildInt;
+        public uint  ServerBuildInt;
         public string ServerFamilyName;
         public string ServerHostName;
         public string ServerProductName;
-        public int ServerType;
-        public int ServerVerInt;
+        public uint  ServerType;
+        public uint  ServerVerInt;
         public string ServerVersionString;
     }
 }

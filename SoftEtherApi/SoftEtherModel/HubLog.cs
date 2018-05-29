@@ -6,9 +6,9 @@ namespace SoftEtherApi.SoftEtherModel
     {
         public string HubName;
         public List<int> PacketLogConfig;
-        public int PacketLogSwitchType;
-        public int SavePacketLog;
-        public int SaveSecurityLog;
-        public int SecurityLogSwitchType;
+        public uint  PacketLogSwitchType;
+        public uint  SavePacketLog;
+        public uint  SaveSecurityLog;
+        public uint  SecurityLogSwitchType;
     }
 }

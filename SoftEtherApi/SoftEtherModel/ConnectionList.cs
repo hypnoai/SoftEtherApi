@@ -6,12 +6,12 @@ namespace SoftEtherApi.SoftEtherModel
     {
         public DateTime ConnectedTime;
         public string Hostname;
-        public int Ip;
+        public uint  Ip;
         public byte[] Ipipv6_array;
-        public int Ipipv6_bool;
-        public int Ipipv6_scope_id;
+        public uint  Ipipv6_bool;
+        public uint  Ipipv6_scope_id;
         public string Name;
-        public int Port;
-        public int Type;
+        public uint  Port;
+        public uint  Type;
     }
 }

@@ -6,27 +6,27 @@ namespace SoftEtherApi.SoftEtherModel
     {
         public DateTime CreatedTime;
         public string HubName;
-        public int HubType;
+        public uint  HubType;
         public DateTime LastCommTime;
         public DateTime LastLoginTime;
-        public int NumAccessLists;
-        public int NumGroups;
-        public int NumIpTables;
-        public int NumLogin;
-        public int NumMacTables;
-        public int NumSessions;
-        public int NumSessionsBridge;
-        public int NumSessionsClient;
-        public int NumUsers;
+        public uint  NumAccessLists;
+        public uint  NumGroups;
+        public uint  NumIpTables;
+        public uint  NumLogin;
+        public uint  NumMacTables;
+        public uint  NumSessions;
+        public uint  NumSessionsBridge;
+        public uint  NumSessionsClient;
+        public uint  NumUsers;
         public bool Online;
-        public long RecvBroadcastBytes;
-        public long RecvBroadcastCount;
-        public long RecvUnicastBytes;
-        public long RecvUnicastCount;
+        public ulong RecvBroadcastBytes;
+        public ulong RecvBroadcastCount;
+        public ulong RecvUnicastBytes;
+        public ulong RecvUnicastCount;
         public bool SecureNATEnabled;
-        public long SendBroadcastBytes;
-        public long SendBroadcastCount;
-        public long SendUnicastBytes;
-        public long SendUnicastCount;
+        public ulong SendBroadcastBytes;
+        public ulong SendBroadcastCount;
+        public ulong SendUnicastBytes;
+        public ulong SendUnicastCount;
     }
 }

@@ -53,8 +53,7 @@ namespace SoftEtherApi.Extensions
             var result = binRdr.ReadBytes(byteCount);
 
             if (result.Length != byteCount)
-                throw new EndOfStreamException(string.Format("{0} bytes required from stream, but only {1} returned.",
-                    byteCount, result.Length));
+                throw new EndOfStreamException($"{byteCount} bytes required from stream, but only {result.Length} returned.");
 
             return result;
         }

@@ -5,25 +5,25 @@ namespace SoftEtherApi.SoftEtherModel
     public class HubList : BaseSoftEtherModel<HubList>
     {
         public DateTime CreatedTime;
-        public long ExRecvBroadcastBytes;
-        public long ExRecvBroadcastCount;
-        public long ExRecvUnicastBytes;
-        public long ExRecvUnicastCount;
-        public long ExSendBroadcastBytes;
-        public long ExSendBroadcastCount;
-        public long ExSendUnicastBytes;
-        public long ExSendUnicastCount;
+        public ulong ExRecvBroadcastBytes;
+        public ulong ExRecvBroadcastCount;
+        public ulong ExRecvUnicastBytes;
+        public ulong ExRecvUnicastCount;
+        public ulong ExSendBroadcastBytes;
+        public ulong ExSendBroadcastCount;
+        public ulong ExSendUnicastBytes;
+        public ulong ExSendUnicastCount;
         public string HubName;
-        public int HubType;
-        public int IsTrafficFilled;
+        public uint  HubType;
+        public uint  IsTrafficFilled;
         public DateTime LastCommTime;
         public DateTime LastLoginTime;
-        public int NumGroups;
-        public int NumIpTables;
-        public int NumLogin;
-        public int NumMacTables;
-        public int NumSessions;
-        public int NumUsers;
-        public int Online;
+        public uint  NumGroups;
+        public uint  NumIpTables;
+        public uint  NumLogin;
+        public uint  NumMacTables;
+        public uint  NumSessions;
+        public uint  NumUsers;
+        public uint  Online;
     }
 }

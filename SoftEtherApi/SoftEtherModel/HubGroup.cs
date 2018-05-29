@@ -6,13 +6,13 @@ namespace SoftEtherApi.SoftEtherModel
         public string Name;
         public string Note;
         public string Realname;
-        public long RecvBroadcastBytes;
-        public long RecvBroadcastCount;
-        public long RecvUnicastBytes;
-        public long RecvUnicastCount;
-        public long SendBroadcastBytes;
-        public long SendBroadcastCount;
-        public long SendUnicastBytes;
-        public long SendUnicastCount;
+        public ulong RecvBroadcastBytes;
+        public ulong RecvBroadcastCount;
+        public ulong RecvUnicastBytes;
+        public ulong RecvUnicastCount;
+        public ulong SendBroadcastBytes;
+        public ulong SendBroadcastCount;
+        public ulong SendUnicastBytes;
+        public ulong SendUnicastCount;
     }
 }

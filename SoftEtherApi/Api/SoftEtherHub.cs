@@ -228,8 +228,8 @@ namespace SoftEtherApi.Api
             DateTime createTime,
             DateTime updatedTime,
             DateTime expireTime,
-            int numLogin,
-            int authType,
+            uint numLogin,
+            uint authType,
             byte[] hashedPw,
             byte[] securePw)
         {

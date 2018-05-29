@@ -4,7 +4,7 @@ namespace SoftEtherApi.SoftEtherModel
 {
     public class HubUser : BaseSoftEtherModel<HubUser>
     {
-        public int AuthType;
+        public uint  AuthType;
         public DateTime CreatedTime;
         public DateTime ExpireTime;
         public string GroupName;
@@ -13,16 +13,16 @@ namespace SoftEtherApi.SoftEtherModel
         public string Name;
         public string Note;
         public byte[] NtLmSecureHash;
-        public int NumLogin;
+        public uint  NumLogin;
         public string Realname;
-        public long RecvBroadcastBytes;
-        public long RecvBroadcastCount;
-        public long RecvUnicastBytes;
-        public long RecvUnicastCount;
-        public long SendBroadcastBytes;
-        public long SendBroadcastCount;
-        public long SendUnicastBytes;
-        public long SendUnicastCount;
+        public ulong RecvBroadcastBytes;
+        public ulong RecvBroadcastCount;
+        public ulong RecvUnicastBytes;
+        public ulong RecvUnicastCount;
+        public ulong SendBroadcastBytes;
+        public ulong SendBroadcastCount;
+        public ulong SendUnicastBytes;
+        public ulong SendUnicastCount;
         public DateTime UpdatedTime;
     }
 }
