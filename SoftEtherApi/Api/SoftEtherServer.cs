@@ -51,7 +51,7 @@ namespace SoftEtherApi.Api
         public ConnectionInfo GetConnectionInfo(string name)
         {
             var requestData =
-                new Dictionary<string, (string, dynamic[])> {{"Name", ("string", new dynamic[] {name})}};
+                new Dictionary<string, (string, object[])> {{"Name", ("string", new object[] {name})}};
 
             var rawData = _softEther.CallMethod("GetConnectionInfo", requestData);
             return ConnectionInfo.Deserialize(rawData);

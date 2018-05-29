@@ -19,17 +19,17 @@ namespace SoftEtherApi
             return BitConverter.ToInt32(val.Reverse().ToArray(), 0);
         }
 
-        public static byte[] Serialize(Dictionary<string, (string, dynamic[])> list)
+        public static byte[] Serialize(Dictionary<string, (string, object[])> list)
         {
             var memStream = new MemoryStream();
             var writer = new BinaryWriter(memStream);
 
-            writer.WriteUInt32BE((uint) list.Count);
+            writer.WriteUInt32BE(Convert.ToUInt32(list.Count));
 
             foreach (var el in list)
             {
                 var keyBytes = Encoding.ASCII.GetBytes(el.Key);
-                writer.WriteUInt32BE((uint) (keyBytes.Length + 1));
+                writer.WriteUInt32BE(Convert.ToUInt32(keyBytes.Length + 1));
                 writer.Write(keyBytes);
 
 
@@ -38,27 +38,27 @@ namespace SoftEtherApi
                     case "int":
                     {
                         writer.WriteUInt32BE(0);
-                        writer.WriteUInt32BE((uint) el.Value.Item2.Length);
+                        writer.WriteUInt32BE(Convert.ToUInt32(el.Value.Item2.Length));
                         foreach (var t in el.Value.Item2) 
-                            writer.WriteUInt32BE((uint) t);
+                            writer.WriteUInt32BE(Convert.ToUInt32(t));
                         break;
                     }
                     case "int64":
                     {
                         writer.WriteUInt32BE(4);
-                        writer.WriteUInt32BE((uint) el.Value.Item2.Length);
+                        writer.WriteUInt32BE(Convert.ToUInt32(el.Value.Item2.Length));
                         foreach (var t in el.Value.Item2) 
-                            writer.WriteUInt64BE((ulong) t);
+                            writer.WriteUInt64BE(Convert.ToUInt64(t));
                         break;
                     }
                     case "string":
                     {
                         writer.WriteUInt32BE(2);
-                        writer.WriteUInt32BE((uint) el.Value.Item2.Length);
+                        writer.WriteUInt32BE(Convert.ToUInt32(el.Value.Item2.Length));
                         foreach (var t in el.Value.Item2)
                         {
                             var tBytes = Encoding.ASCII.GetBytes((string) t);
-                            writer.WriteUInt32BE((uint) tBytes.Length);
+                            writer.WriteUInt32BE(Convert.ToUInt32(tBytes.Length));
                             writer.Write(tBytes);
                         }
                         break;
@@ -66,11 +66,11 @@ namespace SoftEtherApi
                     case "ustring":
                     {
                         writer.WriteUInt32BE(3);
-                        writer.WriteUInt32BE((uint) el.Value.Item2.Length);
+                        writer.WriteUInt32BE(Convert.ToUInt32(el.Value.Item2.Length));
                         foreach (var t in el.Value.Item2)
                         {
                             var tBytes = Encoding.UTF8.GetBytes((string) t);
-                            writer.WriteUInt32BE((uint) tBytes.Length);
+                            writer.WriteUInt32BE(Convert.ToUInt32(tBytes.Length));
                             writer.Write(tBytes);
                         }
                         break;
@@ -79,10 +79,10 @@ namespace SoftEtherApi
                     default:
                     {
                         writer.WriteUInt32BE(1);
-                        writer.WriteUInt32BE((uint) el.Value.Item2.Length);
+                        writer.WriteUInt32BE(Convert.ToUInt32(el.Value.Item2.Length));
                         foreach (var t in el.Value.Item2)
                         {
-                            writer.WriteUInt32BE((uint) ((byte[]) t).Length);
+                            writer.WriteUInt32BE(Convert.ToUInt32(((byte[]) t).Length));
                             writer.Write((byte[]) t);
                         }
                         break;
@@ -93,22 +93,22 @@ namespace SoftEtherApi
             return memStream.ToArray();
         }
 
-        public static Dictionary<string, List<dynamic>> Deserialize(byte[] body)
+        public static Dictionary<string, List<object>> Deserialize(byte[] body)
         {
             var memStream = new MemoryStream(body, false);
             var reader = new BinaryReader(memStream);
 
             var count = reader.ReadUInt32BE();
 
-            var res = new Dictionary<string, List<dynamic>>();
+            var res = new Dictionary<string, List<object>>();
             for (var i = 0; i < count; i++)
             {
-                var keyLen = reader.ReadUInt32BE();
-                var key = Encoding.ASCII.GetString(reader.ReadBytesRequired((int) (keyLen - 1)));
+                var keyLen = reader.ReadInt32BE();
+                var key = Encoding.ASCII.GetString(reader.ReadBytesRequired(keyLen - 1));
                 var keyType = reader.ReadUInt32BE();
                 var valueCount = reader.ReadUInt32BE();
 
-                var list = new List<dynamic>();
+                var list = new List<object>();
                 for (var j = 0; j < valueCount; j++)
                 {
                     switch (keyType)
@@ -120,20 +120,20 @@ namespace SoftEtherApi
                         }
                         case 1:
                         {
-                            var strLen = reader.ReadUInt32BE();
-                            list.Add(reader.ReadBytesRequired((int) strLen));
+                            var strLen = reader.ReadInt32BE();
+                            list.Add(reader.ReadBytesRequired(strLen));
                             break;
                         }
                         case 2:
                         {
-                            var strLen = reader.ReadUInt32BE();
-                            list.Add(Encoding.ASCII.GetString(reader.ReadBytesRequired((int) strLen)));
+                            var strLen = reader.ReadInt32BE();
+                            list.Add(Encoding.ASCII.GetString(reader.ReadBytesRequired(strLen)));
                             break;
                         }
                         case 3:
                         {
-                            var strLen = reader.ReadUInt32BE();
-                            list.Add(Encoding.UTF8.GetString(reader.ReadBytesRequired((int) strLen)));
+                            var strLen = reader.ReadInt32BE();
+                            list.Add(Encoding.UTF8.GetString(reader.ReadBytesRequired(strLen)));
                             break;
                         }
                         case 4:

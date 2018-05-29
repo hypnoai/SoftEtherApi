@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Security;
 using System.Text;
 using SoftEtherApi.Extensions;
+using SoftEtherApi.SoftEtherModel;
 
 namespace SoftEtherApi
 {
@@ -36,12 +38,12 @@ namespace SoftEtherApi
             socket.Flush();
         }
 
-        public static Dictionary<string, dynamic> GetHttpResponse(this SslStream socket)
+        public static SoftEtherHttpResult GetHttpResponse(this SslStream socket)
         {
             var stream = new BinaryReader(socket);
 
             var firstLine = stream.ReadLine();
-            var responseCode = int.Parse(firstLine.Substring(9, 3));
+            var responseCode = Convert.ToInt32(firstLine.Substring(9, 3));
             var responseHeaders = new Dictionary<string, string>();
             var responseLength = 0;
 
@@ -66,12 +68,12 @@ namespace SoftEtherApi
                 bytesRead += stream.Read(responseBody, bytesRead, responseLength - bytesRead);
 
 
-            return new Dictionary<string, dynamic>
+            return new SoftEtherHttpResult
             {
-                {"code", responseCode},
-                {"headers", responseHeaders},
-                {"length", responseLength},
-                {"body", responseBody}
+                code = responseCode,
+                headers = responseHeaders,
+                length = responseLength,
+                body = responseBody
             };
         }
     }

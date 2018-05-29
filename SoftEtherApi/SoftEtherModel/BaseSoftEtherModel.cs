@@ -15,7 +15,7 @@ namespace SoftEtherApi.SoftEtherModel
             return !Error.HasValue;
         }
 
-        public static T Deserialize(Dictionary<string, List<dynamic>> value)
+        public static T Deserialize(Dictionary<string, List<object>> value)
         {
             var keyMapping = value.Keys.Select(m => (m.Replace(".", "").Replace("@", ""), m))
                 .ToDictionary(tuple => tuple.Item1.ToLower(), tuple => tuple.Item2);
@@ -53,7 +53,7 @@ namespace SoftEtherApi.SoftEtherModel
             return returnVal;
         }
 
-        public static SoftEtherList<T> DeserializeMany(Dictionary<string, List<dynamic>> value)
+        public static SoftEtherList<T> DeserializeMany(Dictionary<string, List<object>> value)
         {
             var keyMapping = value.Keys.Select(m => (m.Replace(".", "").Replace("@", ""), m))
                 .ToDictionary(tuple => tuple.Item1.ToLower(), tuple => tuple.Item2);

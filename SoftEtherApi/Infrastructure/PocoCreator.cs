@@ -9,7 +9,7 @@ namespace SoftEtherApi.Infrastructure
 {
     public class PocoCreator
     {
-        public static void GenerateSourceFile(string className, Dictionary<string, List<dynamic>> list,
+        public static void GenerateSourceFile(string className, Dictionary<string, List<object>> list,
             bool containsMany = false)
         {
             var fileBuffer = new StringBuilder();

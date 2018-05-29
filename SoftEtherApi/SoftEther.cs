@@ -55,10 +55,10 @@ namespace SoftEtherApi
                 SoftEtherNetwork.GetDefaultHeaders());
 
             var connectResponse = _socket.GetHttpResponse();
-            if (connectResponse["code"] != 200)
+            if (connectResponse.code != 200)
                 return new ConnectResult {Error = SoftEtherError.ConnectFailed};
 
-            var connectDict = SoftEtherProtocol.Deserialize(connectResponse["body"]);
+            var connectDict = SoftEtherProtocol.Deserialize(connectResponse.body);
             var connectResult = ConnectResult.Deserialize(connectDict);
 
             if (connectDict.ContainsKey("random"))
@@ -72,16 +72,16 @@ namespace SoftEtherApi
             if (RandomFromServer == null)
                 return new AuthResult {Error = SoftEtherError.ConnectFailed};
 
-            var authPayload = new Dictionary<string, (string, dynamic[])>
+            var authPayload = new Dictionary<string, (string, object[])>
             {
-                {"method", ("string", new dynamic[] {"admin"})},
-                {"client_str", ("string", new dynamic[] {"SoftEtherNet"})},
-                {"client_ver", ("int", new dynamic[] {1})},
-                {"client_build", ("int", new dynamic[] {0})}
+                {"method", ("string", new object[] {"admin"})},
+                {"client_str", ("string", new object[] {"SoftEtherNet"})},
+                {"client_ver", ("int", new object[] {1})},
+                {"client_build", ("int", new object[] {0})}
             };
 
             if (!string.IsNullOrWhiteSpace(hubName))
-                authPayload.Add("hubname", ("string", new dynamic[] {hubName}));
+                authPayload.Add("hubname", ("string", new object[] {hubName}));
 
             var hashedPwCreator = new SHA0();
             var hashedPw = hashedPwCreator.Update(Encoding.ASCII.GetBytes(password)).Digest();
@@ -90,7 +90,7 @@ namespace SoftEtherApi
             securePwCreator.Update(hashedPw);
             var securePw = securePwCreator.Update(RandomFromServer).Digest();
 
-            authPayload.Add("secure_password", ("raw", new dynamic[] {securePw}));
+            authPayload.Add("secure_password", ("raw", new object[] {securePw}));
 
             var serializedAuthPayload = SoftEtherProtocol.Serialize(authPayload);
             _socket.SendHttpRequest("POST", "/vpnsvc/vpn.cgi", serializedAuthPayload,
@@ -98,18 +98,18 @@ namespace SoftEtherApi
 
             var authResponse = _socket.GetHttpResponse();
 
-            if (authResponse["code"] != 200)
+            if (authResponse.code != 200)
                 return new AuthResult {Error = SoftEtherError.AuthFailed};
 
-            var authDict = SoftEtherProtocol.Deserialize(authResponse["body"]);
+            var authDict = SoftEtherProtocol.Deserialize(authResponse.body);
             return AuthResult.Deserialize(authDict);
         }
 
-        public Dictionary<string, List<dynamic>> CallMethod(string functionName,
-            Dictionary<string, (string, dynamic[])> payload = null)
+        public Dictionary<string, List<object>> CallMethod(string functionName,
+            Dictionary<string, (string, object[])> payload = null)
         {
             if (payload == null)
-                payload = new Dictionary<string, (string, dynamic[])>();
+                payload = new Dictionary<string, (string, object[])>();
 
             //remove null items
             foreach (var key in payload.Keys.ToList())
@@ -125,7 +125,7 @@ namespace SoftEtherApi
             payload = payload.Where(m => m.Value.Item2 != null && m.Value.Item2.Length > 0)
                 .ToDictionary(m => m.Key, m => m.Value);
 
-            payload.Add("function_name", ("string", new dynamic[] {functionName}));
+            payload.Add("function_name", ("string", new object[] {functionName}));
 
             var serializedPayload = SoftEtherProtocol.Serialize(payload);
             var serializedLength = SoftEtherProtocol.SerializeInt(serializedPayload.Length);
