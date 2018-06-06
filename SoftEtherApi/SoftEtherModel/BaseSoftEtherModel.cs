@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Linq;
 using System.Net;
+using System.Security.Cryptography.X509Certificates;
 using SoftEtherApi.Containers;
 using SoftEtherApi.Infrastructure;
 
@@ -115,6 +116,11 @@ namespace SoftEtherApi.SoftEtherModel
             if (valType == typeof(IPAddress))
             {
                 return SoftEtherConverter.UIntToIpAddress((uint) val);
+            }
+            
+            if (valType == typeof(X509Certificate))
+            {
+                return new X509Certificate((byte[])val);
             }
 
             if (valType == typeof(bool))
