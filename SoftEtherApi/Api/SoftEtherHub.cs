@@ -45,6 +45,38 @@ namespace SoftEtherApi.Api
             };
 
             var rawData = _softEther.CallMethod("GetSecureNATOption", requestData);
+            var model = VirtualHostOptions.Deserialize(rawData);
+            model.RpcHubName = hubName; //Fix, as softEther clears the hubname
+            return model;
+        }
+
+        public VirtualHostOptions SetSecureNatOptions(string hubName, VirtualHostOptions options)
+        {
+            var requestData = new SoftEtherParameterCollection
+            {
+                {"RpcHubName", options.RpcHubName},
+                {"MacAddress", options.MacAddress},
+                {"Ip", options.Ip},
+                {"Mask", options.Mask},
+                {"UseNat", options.UseNat},
+                {"Mtu", options.Mtu},
+                {"NatTcpTimeout", options.NatTcpTimeout},
+                {"NatUdpTimeout", options.NatUdpTimeout},
+                {"UseDhcp", options.UseDhcp},
+                {"DhcpLeaseIPStart", options.DhcpLeaseIPStart},
+                {"DhcpLeaseIPEnd", options.DhcpLeaseIPEnd},
+                {"DhcpSubnetMask", options.DhcpSubnetMask},
+                {"DhcpExpireTimeSpan", options.DhcpExpireTimeSpan},
+                {"DhcpGatewayAddress", options.DhcpGatewayAddress},
+                {"DhcpDnsServerAddress", options.DhcpDnsServerAddress},
+                {"DhcpDnsServerAddress2", options.DhcpDnsServerAddress2},
+                {"DhcpDomainName", options.DhcpDomainName},
+                {"SaveLog", options.SaveLog},
+                {"ApplyDhcpPushRoutes", options.ApplyDhcpPushRoutes},
+                {"DhcpPushRoutes", options.DhcpPushRoutes}
+            };
+
+            var rawData = _softEther.CallMethod("SetSecureNATOption", requestData);
             return VirtualHostOptions.Deserialize(rawData);
         }
 

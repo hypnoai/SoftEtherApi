@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using SoftEtherApi.Infrastructure;
 
 namespace SoftEtherApi.Containers
@@ -46,7 +47,17 @@ namespace SoftEtherApi.Containers
             Parameters.Add(key, new SoftEtherParameter(key, SoftEtherValueType.String, value));            
         }
         
+        public void Add(string key, IPAddress value)
+        {
+            Add(key, SoftEtherConverter.IpAddressToUint(value));           
+        }
+        
         public void Add(string key, int value)
+        {
+            Parameters.Add(key, new SoftEtherParameter(key, SoftEtherValueType.Int, value));            
+        }
+        
+        public void Add(string key, uint value)
         {
             Parameters.Add(key, new SoftEtherParameter(key, SoftEtherValueType.Int, value));            
         }
@@ -57,6 +68,11 @@ namespace SoftEtherApi.Containers
         }
         
         public void Add(string key, long value)
+        {
+            Parameters.Add(key, new SoftEtherParameter(key, SoftEtherValueType.Int64, value));            
+        }
+        
+        public void Add(string key, ulong value)
         {
             Parameters.Add(key, new SoftEtherParameter(key, SoftEtherValueType.Int64, value));            
         }
