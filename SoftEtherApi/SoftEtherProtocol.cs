@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using SoftEtherApi.Containers;
 using SoftEtherApi.Extensions;
 
 namespace SoftEtherApi
@@ -19,43 +20,43 @@ namespace SoftEtherApi
             return BitConverter.ToInt32(val.Reverse().ToArray(), 0);
         }
 
-        public static byte[] Serialize(Dictionary<string, (string, object[])> list)
+        public static byte[] Serialize(SoftEtherParameterCollection list)
         {
             var memStream = new MemoryStream();
             var writer = new BinaryWriter(memStream);
 
             writer.WriteUInt32BE(Convert.ToUInt32(list.Count));
 
-            foreach (var el in list)
+            foreach (var parameter in list)
             {
-                var keyBytes = Encoding.ASCII.GetBytes(el.Key);
+                var keyBytes = Encoding.ASCII.GetBytes(parameter.Key);
                 writer.WriteUInt32BE(Convert.ToUInt32(keyBytes.Length + 1));
                 writer.Write(keyBytes);
 
 
-                switch (el.Value.Item1)
+                switch (parameter.ValueType)
                 {
                     case "int":
                     {
                         writer.WriteUInt32BE(0);
-                        writer.WriteUInt32BE(Convert.ToUInt32(el.Value.Item2.Length));
-                        foreach (var t in el.Value.Item2) 
+                        writer.WriteUInt32BE(Convert.ToUInt32(parameter.Value.Count));
+                        foreach (var t in parameter.Value) 
                             writer.WriteUInt32BE(Convert.ToUInt32(t));
                         break;
                     }
                     case "int64":
                     {
                         writer.WriteUInt32BE(4);
-                        writer.WriteUInt32BE(Convert.ToUInt32(el.Value.Item2.Length));
-                        foreach (var t in el.Value.Item2) 
+                        writer.WriteUInt32BE(Convert.ToUInt32(parameter.Value.Count));
+                        foreach (var t in parameter.Value) 
                             writer.WriteUInt64BE(Convert.ToUInt64(t));
                         break;
                     }
                     case "string":
                     {
                         writer.WriteUInt32BE(2);
-                        writer.WriteUInt32BE(Convert.ToUInt32(el.Value.Item2.Length));
-                        foreach (var t in el.Value.Item2)
+                        writer.WriteUInt32BE(Convert.ToUInt32(parameter.Value.Count));
+                        foreach (var t in parameter.Value)
                         {
                             var tBytes = Encoding.ASCII.GetBytes((string) t);
                             writer.WriteUInt32BE(Convert.ToUInt32(tBytes.Length));
@@ -66,8 +67,8 @@ namespace SoftEtherApi
                     case "ustring":
                     {
                         writer.WriteUInt32BE(3);
-                        writer.WriteUInt32BE(Convert.ToUInt32(el.Value.Item2.Length));
-                        foreach (var t in el.Value.Item2)
+                        writer.WriteUInt32BE(Convert.ToUInt32(parameter.Value.Count));
+                        foreach (var t in parameter.Value)
                         {
                             var tBytes = Encoding.UTF8.GetBytes((string) t);
                             writer.WriteUInt32BE(Convert.ToUInt32(tBytes.Length));
@@ -79,8 +80,8 @@ namespace SoftEtherApi
                     default:
                     {
                         writer.WriteUInt32BE(1);
-                        writer.WriteUInt32BE(Convert.ToUInt32(el.Value.Item2.Length));
-                        foreach (var t in el.Value.Item2)
+                        writer.WriteUInt32BE(Convert.ToUInt32(parameter.Value.Count));
+                        foreach (var t in parameter.Value)
                         {
                             writer.WriteUInt32BE(Convert.ToUInt32(((byte[]) t).Length));
                             writer.Write((byte[]) t);

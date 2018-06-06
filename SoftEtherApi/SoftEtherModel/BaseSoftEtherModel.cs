@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using SoftEtherApi.Infrastructure;
 
 namespace SoftEtherApi.SoftEtherModel
 {
@@ -102,12 +103,17 @@ namespace SoftEtherApi.SoftEtherModel
         {
             if (valType == typeof(DateTime))
             {
-                return SoftEther.LongToDateTime(Convert.ToInt64(val ?? 0));
+                return SoftEtherConverter.LongToDateTime(Convert.ToInt64(val ?? 0));
+            }
+            
+            if (valType == typeof(TimeSpan))
+            {
+                return new TimeSpan(0, 0, 0, Convert.ToInt32(val));
             }
 
             if (valType == typeof(IPAddress))
             {
-                return new IPAddress((uint)val);
+                return SoftEtherConverter.UIntToIpAddress((uint) val);
             }
 
             if (valType == typeof(bool))

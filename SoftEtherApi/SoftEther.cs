@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Security;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using SoftEtherApi.Api;
+using SoftEtherApi.Containers;
 using SoftEtherApi.Infrastructure;
 using SoftEtherApi.SoftEtherModel;
 
@@ -17,7 +17,6 @@ namespace SoftEtherApi
         private readonly SslStream _socket;
 
         public byte[] RandomFromServer { get; private set; }
-        public static int HoursTimeOffset { get; set; } = 9; //UTC+9 for JAPAN
 
         public SoftEtherServer ServerApi { get; }
         public SoftEtherHub HubApi { get; }
@@ -37,16 +36,6 @@ namespace SoftEtherApi
         {
             _rawSocket.Dispose();
             _socket.Dispose();
-        }
-
-        public static DateTime LongToDateTime(long val)
-        {
-            return DateTimeOffset.FromUnixTimeMilliseconds(val).AddHours(HoursTimeOffset).ToLocalTime().DateTime;
-        }
-
-        public static long DateTimeToLong(DateTime val)
-        {
-            return new DateTimeOffset(val).AddHours(-HoursTimeOffset).ToUnixTimeMilliseconds();
         }
 
         public ConnectResult Connect()
@@ -72,20 +61,20 @@ namespace SoftEtherApi
             if (RandomFromServer == null)
                 return new AuthResult {Error = SoftEtherError.ConnectFailed};
 
-            var authPayload = new Dictionary<string, (string, object[])>
+            var authPayload = new SoftEtherParameterCollection
             {
-                {"method", ("string", new object[] {"admin"})},
-                {"client_str", ("string", new object[] {"SoftEtherNet"})},
-                {"client_ver", ("int", new object[] {1})},
-                {"client_build", ("int", new object[] {0})}
+                {"method", "admin"},
+                {"client_str", "SoftEtherNet"},
+                {"client_ver", 1},
+                {"client_build", 0}
             };
 
             if (!string.IsNullOrWhiteSpace(hubName))
-                authPayload.Add("hubname", ("string", new object[] {hubName}));
+                authPayload.Add("hubname", hubName);
 
             var (hashedPw, securePw) = CreateHashAnSecure(password);
 
-            authPayload.Add("secure_password", ("raw", new object[] {securePw}));
+            authPayload.Add("secure_password", securePw);
 
             var serializedAuthPayload = SoftEtherProtocol.Serialize(authPayload);
             _socket.SendHttpRequest("POST", "/vpnsvc/vpn.cgi", serializedAuthPayload,
@@ -101,26 +90,13 @@ namespace SoftEtherApi
         }
 
         public Dictionary<string, List<object>> CallMethod(string functionName,
-            Dictionary<string, (string, object[])> payload = null)
+            SoftEtherParameterCollection payload = null)
         {
             if (payload == null)
-                payload = new Dictionary<string, (string, object[])>();
-
-            //remove null items
-            foreach (var key in payload.Keys.ToList())
-            {
-                var val = payload[key];
-                if (val.Item2 == null || !val.Item2.Contains(null))
-                    continue;
-
-                payload[key] = (val.Item1, val.Item2.Where(m => m != null).ToArray());
-            }
-
-            //Remove empty lists
-            payload = payload.Where(m => m.Value.Item2 != null && m.Value.Item2.Length > 0)
-                .ToDictionary(m => m.Key, m => m.Value);
-
-            payload.Add("function_name", ("string", new object[] {functionName}));
+                payload = new SoftEtherParameterCollection();
+            
+            payload.RemoveNullParameters();
+            payload.Add("function_name", functionName);
 
             var serializedPayload = SoftEtherProtocol.Serialize(payload);
             var serializedLength = SoftEtherProtocol.SerializeInt(serializedPayload.Length);

@@ -38,9 +38,12 @@
   <ItemGroup>
     <Compile Include="Api\SoftEtherHub.cs" />
     <Compile Include="Api\SoftEtherServer.cs" />
+    <Compile Include="Containers\SoftEtherParameter.cs" />
+    <Compile Include="Containers\SoftEtherParameterCollection.cs" />
     <Compile Include="Extensions\BinaryReaderExtensions.cs" />
     <Compile Include="Extensions\BinaryWriterExtensions.cs" />
     <Compile Include="Extensions\DeconstructExtensions.cs" />
+    <Compile Include="Infrastructure\SoftEtherConverter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Infrastructure\MD4.cs" />
     <Compile Include="Infrastructure\PocoCreator.cs" />
@@ -71,6 +74,7 @@
     <Compile Include="SoftEtherModel\ServerInfo.cs" />
     <Compile Include="SoftEtherModel\ServerStatus.cs" />
     <Compile Include="SoftEtherModel\SoftEtherList.cs" />
+    <Compile Include="SoftEtherModel\VirtualHostOptions.cs" />
     <Compile Include="SoftEtherNetwork.cs" />
     <Compile Include="SoftEtherProtocol.cs" />
   </ItemGroup>

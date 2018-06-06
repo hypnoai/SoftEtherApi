@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using SoftEtherApi.Infrastructure;
+using SoftEtherApi.Containers;
 using SoftEtherApi.SoftEtherModel;
 
 namespace SoftEtherApi.Api
@@ -18,10 +16,10 @@ namespace SoftEtherApi.Api
         public Hub SetOnline(string hubName, bool online)
         {
             var requestData =
-                new Dictionary<string, (string, object[])>
+                new SoftEtherParameterCollection
                 {
-                    {"HubName", ("string", new object[] {hubName})},
-                    {"Online", ("int", new object[] {online ? 1 : 0})}
+                    {"HubName", hubName},
+                    {"Online", online}
                 };
 
             var rawData = _softEther.CallMethod("SetHubOnline", requestData);
@@ -30,11 +28,24 @@ namespace SoftEtherApi.Api
 
         public Hub Get(string hubName)
         {
-            var requestData =
-                new Dictionary<string, (string, object[])> {{"HubName", ("string", new object[] {hubName})}};
+            var requestData = new SoftEtherParameterCollection
+            {
+                {"HubName", hubName}
+            };
 
             var rawData = _softEther.CallMethod("GetHub", requestData);
             return Hub.Deserialize(rawData);
+        }
+
+        public VirtualHostOptions GetSecureNatOptions(string hubName)
+        {
+            var requestData = new SoftEtherParameterCollection
+            {
+                {"RpcHubName", hubName}
+            };
+
+            var rawData = _softEther.CallMethod("GetSecureNATOption", requestData);
+            return VirtualHostOptions.Deserialize(rawData);
         }
 
         public SoftEtherList<HubList> GetList()
@@ -45,8 +56,10 @@ namespace SoftEtherApi.Api
 
         public HubRadius GetRadius(string hubName)
         {
-            var requestData =
-                new Dictionary<string, (string, object[])> {{"HubName", ("string", new object[] {hubName})}};
+            var requestData = new SoftEtherParameterCollection
+            {
+                {"HubName", hubName}
+            };
 
             var rawData = _softEther.CallMethod("GetHubRadius", requestData);
             return HubRadius.Deserialize(rawData);
@@ -54,8 +67,10 @@ namespace SoftEtherApi.Api
 
         public HubStatus GetStatus(string hubName)
         {
-            var requestData =
-                new Dictionary<string, (string, object[])> {{"HubName", ("string", new object[] {hubName})}};
+            var requestData = new SoftEtherParameterCollection
+            {
+                {"HubName", hubName}
+            };
 
             var rawData = _softEther.CallMethod("GetHubStatus", requestData);
             return HubStatus.Deserialize(rawData);
@@ -63,8 +78,10 @@ namespace SoftEtherApi.Api
 
         public HubLog GetLog(string hubName)
         {
-            var requestData =
-                new Dictionary<string, (string, object[])> {{"HubName", ("string", new object[] {hubName})}};
+            var requestData = new SoftEtherParameterCollection
+            {
+                {"HubName", hubName}
+            };
 
             var rawData = _softEther.CallMethod("GetHubLog", requestData);
             return HubLog.Deserialize(rawData);
@@ -72,8 +89,10 @@ namespace SoftEtherApi.Api
 
         public SoftEtherList<HubAccessList> GetAccessList(string hubName)
         {
-            var requestData =
-                new Dictionary<string, (string, object[])> {{"HubName", ("string", new object[] {hubName})}};
+            var requestData = new SoftEtherParameterCollection
+            {
+                {"HubName", hubName}
+            };
 
             var rawData = _softEther.CallMethod("EnumAccess", requestData);
             return HubAccessList.DeserializeMany(rawData);
@@ -81,8 +100,10 @@ namespace SoftEtherApi.Api
 
         public SoftEtherList<HubSessionList> GetSessionList(string hubName)
         {
-            var requestData =
-                new Dictionary<string, (string, object[])> {{"HubName", ("string", new object[] {hubName})}};
+            var requestData = new SoftEtherParameterCollection
+            {
+                {"HubName", hubName}
+            };
 
             var rawData = _softEther.CallMethod("EnumSession", requestData);
             return HubSessionList.DeserializeMany(rawData);
@@ -90,8 +111,10 @@ namespace SoftEtherApi.Api
 
         public SoftEtherList<HubUserList> GetUserList(string hubName)
         {
-            var requestData =
-                new Dictionary<string, (string, object[])> {{"HubName", ("string", new object[] {hubName})}};
+            var requestData = new SoftEtherParameterCollection
+            {
+                {"HubName", hubName}
+            };
 
             var rawData = _softEther.CallMethod("EnumUser", requestData);
             return HubUserList.DeserializeMany(rawData);
@@ -99,12 +122,11 @@ namespace SoftEtherApi.Api
 
         public HubUser GetUser(string hubName, string name)
         {
-            var requestData =
-                new Dictionary<string, (string, object[])>
-                {
-                    {"HubName", ("string", new object[] {hubName})},
-                    {"Name", ("string", new object[] {name})}
-                };
+            var requestData = new SoftEtherParameterCollection
+            {
+                {"HubName", hubName},
+                {"Name", name}
+            };
 
             var rawData = _softEther.CallMethod("GetUser", requestData);
             return HubUser.Deserialize(rawData);
@@ -112,12 +134,11 @@ namespace SoftEtherApi.Api
 
         public HubGroup GetGroup(string hubName, string name)
         {
-            var requestData =
-                new Dictionary<string, (string, object[])>
-                {
-                    {"HubName", ("string", new object[] {hubName})},
-                    {"Name", ("string", new object[] {name})}
-                };
+            var requestData = new SoftEtherParameterCollection
+            {
+                {"HubName", hubName},
+                {"Name", name}
+            };
 
             var rawData = _softEther.CallMethod("GetGroup", requestData);
             return HubGroup.Deserialize(rawData);
@@ -125,12 +146,11 @@ namespace SoftEtherApi.Api
 
         public HubGroup DeleteGroup(string hubName, string name)
         {
-            var requestData =
-                new Dictionary<string, (string, object[])>
-                {
-                    {"HubName", ("string", new object[] {hubName})},
-                    {"Name", ("string", new object[] {name})}
-                };
+            var requestData = new SoftEtherParameterCollection
+            {
+                {"HubName", hubName},
+                {"Name", name}
+            };
 
             var rawData = _softEther.CallMethod("DeleteGroup", requestData);
             return HubGroup.Deserialize(rawData);
@@ -138,31 +158,30 @@ namespace SoftEtherApi.Api
 
         public Hub Delete(string hubName)
         {
-            var requestData =
-                new Dictionary<string, (string, object[])>
-                {
-                    {"HubName", ("string", new object[] {hubName})}
-                };
+            var requestData = new SoftEtherParameterCollection
+            {
+                {"HubName", hubName}
+            };
 
             var rawData = _softEther.CallMethod("DeleteHub", requestData);
             return Hub.Deserialize(rawData);
         }
-        
-        public Hub Create(string name, string password, bool online, bool noAnonymousEnumUser = true, HubType hubType = HubType.Standalone, int maxSession = 0)
+
+        public Hub Create(string name, string password, bool online, bool noAnonymousEnumUser = true,
+            HubType hubType = HubType.Standalone, int maxSession = 0)
         {
             var (hashedPw, securePw) = _softEther.CreateHashAnSecure(password);
-            
-            var requestData =
-                new Dictionary<string, (string, object[])>
-                {
-                    {"HubName", ("string", new object[] {name})},
-                    {"HashedPassword", ("raw", new object[] {hashedPw})},
-                    {"SecurePassword", ("raw", new object[] {securePw})},
-                    {"Online", ("int", new object[] {online})},
-                    {"MaxSession", ("int", new object[] {maxSession})},
-                    {"NoEnum", ("int", new object[] {noAnonymousEnumUser})},
-                    {"HubType", ("int", new object[] {hubType})}
-                };
+
+            var requestData = new SoftEtherParameterCollection
+            {
+                {"HubName", name},
+                {"HashedPassword", hashedPw},
+                {"SecurePassword",securePw},
+                {"Online", online},
+                {"MaxSession", maxSession},
+                {"NoEnum", noAnonymousEnumUser},
+                {"HubType", (int)hubType}
+            };
 
             var rawData = _softEther.CallMethod("CreateHub", requestData);
             return Hub.Deserialize(rawData);
@@ -170,14 +189,13 @@ namespace SoftEtherApi.Api
 
         public HubGroup CreateGroup(string hubName, string name, string realName = null, string note = null)
         {
-            var requestData =
-                new Dictionary<string, (string, object[])>
-                {
-                    {"HubName", ("string", new object[] {hubName})},
-                    {"Name", ("string", new object[] {name})},
-                    {"Realname", ("ustring", new object[] {realName})},
-                    {"Note", ("ustring", new object[] {note})}
-                };
+            var requestData = new SoftEtherParameterCollection
+            {
+                {"HubName", hubName},
+                {"Name", name},
+                {"Realname", "ustring", realName},
+                {"Note", "ustring", note}
+            };
 
             var rawData = _softEther.CallMethod("CreateGroup", requestData);
             return HubGroup.Deserialize(rawData);
@@ -185,14 +203,13 @@ namespace SoftEtherApi.Api
 
         public HubGroup SetGroup(string hubName, string name, string realName, string note)
         {
-            var requestData =
-                new Dictionary<string, (string, object[])>
-                {
-                    {"HubName", ("string", new object[] {hubName})},
-                    {"Name", ("string", new object[] {name})},
-                    {"Realname", ("ustring", new object[] {realName})},
-                    {"Note", ("ustring", new object[] {note})}
-                };
+            var requestData = new SoftEtherParameterCollection
+            {
+                {"HubName", hubName},
+                {"Name", name},
+                {"Realname", "ustring", realName},
+                {"Note", "ustring", note}
+            };
 
             var rawData = _softEther.CallMethod("SetGroup", requestData);
             return HubGroup.Deserialize(rawData);
@@ -215,21 +232,18 @@ namespace SoftEtherApi.Api
         {
             var (hashedPw, securePw) = _softEther.CreateHashAndNtLm(name, password);
 
-            var expireTimeValue = expireTime.HasValue ? (long?) SoftEther.DateTimeToLong(expireTime.Value) : null;
-
-            var requestData =
-                new Dictionary<string, (string, object[])>
-                {
-                    {"HubName", ("string", new object[] {hubName})},
-                    {"Name", ("string", new object[] {name})},
-                    {"GroupName", ("string", new object[] {groupName})},
-                    {"Realname", ("ustring", new object[] {realName})},
-                    {"Note", ("ustring", new object[] {note})},
-                    {"ExpireTime", ("int64", new object[] {expireTimeValue})},
-                    {"AuthType", ("int", new object[] {1})}, //auth_type = 0 for no auth, 1 for password auth
-                    {"HashedKey", ("raw", new object[] {hashedPw})},
-                    {"NtLmSecureHash", ("raw", new object[] {securePw})}
-                };
+            var requestData = new SoftEtherParameterCollection
+            {
+                {"HubName", hubName},
+                {"Name", name},
+                {"GroupName", groupName},
+                {"Realname", "ustring", realName},
+                {"Note", "ustring", note},
+                {"ExpireTime", expireTime},
+                {"AuthType", 1}, //auth_type = 0 for no auth, 1 for password auth
+                {"HashedKey", hashedPw},
+                {"NtLmSecureHash", securePw}
+            };
 
             var rawData = _softEther.CallMethod("CreateUser", requestData);
             return HubUser.Deserialize(rawData);
@@ -253,22 +267,21 @@ namespace SoftEtherApi.Api
             byte[] hashedPw,
             byte[] securePw)
         {
-            var requestData =
-                new Dictionary<string, (string, object[])>
-                {
-                    {"HubName", ("string", new object[] {hubName})},
-                    {"Name", ("string", new object[] {name})},
-                    {"GroupName", ("string", new object[] {groupName})},
-                    {"Realname", ("ustring", new object[] {realName})},
-                    {"Note", ("ustring", new object[] {note})},
-                    {"CreatedTime", ("int64", new object[] {SoftEther.DateTimeToLong(createTime)})},
-                    {"UpdatedTime", ("int64", new object[] {SoftEther.DateTimeToLong(updatedTime)})},
-                    {"ExpireTime", ("int64", new object[] {SoftEther.DateTimeToLong(expireTime)})},
-                    {"NumLogin", ("int", new object[] {numLogin})},
-                    {"AuthType", ("int", new object[] {authType})}, //auth_type = 0 for no auth, 1 for password auth
-                    {"HashedKey", ("raw", new object[] {hashedPw})},
-                    {"NtLmSecureHash", ("raw", new object[] {securePw})}
-                };
+            var requestData = new SoftEtherParameterCollection
+            {
+                {"HubName", hubName},
+                {"Name", name},
+                {"GroupName", groupName},
+                {"Realname", "ustring", realName},
+                {"Note", "ustring", note},
+                {"CreatedTime", createTime},
+                {"UpdatedTime", updatedTime},
+                {"ExpireTime", expireTime},
+                {"NumLogin", numLogin},
+                {"AuthType", authType}, //auth_type = 0 for no auth, 1 for password auth
+                {"HashedKey", hashedPw},
+                {"NtLmSecureHash", securePw}
+            };
 
             var rawData = _softEther.CallMethod("SetUser", requestData);
             return HubUser.Deserialize(rawData);
@@ -276,12 +289,11 @@ namespace SoftEtherApi.Api
 
         public HubUser DeleteUser(string hubName, string name)
         {
-            var requestData =
-                new Dictionary<string, (string, object[])>
-                {
-                    {"HubName", ("string", new object[] {hubName})},
-                    {"Name", ("string", new object[] {name})}
-                };
+            var requestData = new SoftEtherParameterCollection
+            {
+                {"HubName", hubName},
+                {"Name", name}
+            };
 
             var rawData = _softEther.CallMethod("DeleteUser", requestData);
             return HubUser.Deserialize(rawData);
