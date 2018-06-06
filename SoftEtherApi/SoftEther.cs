@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net.Security;
 using System.Net.Sockets;
+using System.Security.Authentication;
 using System.Text;
 using System.Threading;
 using SoftEtherApi.Api;
@@ -25,7 +25,7 @@ namespace SoftEtherApi
         {
             _rawSocket = new TcpClient(host, port);
             _socket = new SslStream(_rawSocket.GetStream(), false, (sender, certificate, chain, errors) => true, null);
-            _socket.AuthenticateAsClient(host);
+            _socket.AuthenticateAsClient(host, null, SslProtocols.Tls12, false);
 
             RandomFromServer = null;
             ServerApi = new SoftEtherServer(this);
@@ -34,7 +34,6 @@ namespace SoftEtherApi
 
         public void Dispose()
         {
-            _rawSocket.Dispose();
             _socket.Dispose();
         }
 
@@ -50,7 +49,7 @@ namespace SoftEtherApi
             var connectDict = SoftEtherProtocol.Deserialize(connectResponse.body);
             var connectResult = ConnectResult.Deserialize(connectDict);
 
-            if (connectDict.ContainsKey("random"))
+            if (connectResult.Valid())
                 RandomFromServer = connectResult.random;
 
             return connectResult;
@@ -72,9 +71,9 @@ namespace SoftEtherApi
             if (!string.IsNullOrWhiteSpace(hubName))
                 authPayload.Add("hubname", hubName);
 
-            var (hashedPw, securePw) = CreateHashAnSecure(password);
+            var hashPair = CreateHashAnSecure(password);
 
-            authPayload.Add("secure_password", securePw);
+            authPayload.Add("secure_password", hashPair.Secure);
 
             var serializedAuthPayload = SoftEtherProtocol.Serialize(authPayload);
             _socket.SendHttpRequest("POST", "/vpnsvc/vpn.cgi", serializedAuthPayload,
@@ -89,7 +88,7 @@ namespace SoftEtherApi
             return AuthResult.Deserialize(authDict);
         }
 
-        public Dictionary<string, List<object>> CallMethod(string functionName,
+        public SoftEtherParameterCollection CallMethod(string functionName,
             SoftEtherParameterCollection payload = null)
         {
             if (payload == null)
@@ -132,7 +131,7 @@ namespace SoftEtherApi
             return response;
         }
         
-        public (byte[], byte[]) CreateHashAndNtLm(string name, string password)
+        public SoftEtherHashPair CreateHashAndNtLm(string name, string password)
         {
             var hashedPwCreator = new SHA0();
             hashedPwCreator.Update(Encoding.ASCII.GetBytes(password));
@@ -140,10 +139,10 @@ namespace SoftEtherApi
 
             var securePwCreator = new MD4();
             var securePw = securePwCreator.Update(Encoding.Unicode.GetBytes(password)).Digest();
-            return (hashedPw, securePw);
+            return new SoftEtherHashPair(hashedPw, securePw);
         }
         
-        public (byte[], byte[]) CreateHashAnSecure(string password)
+        public SoftEtherHashPair CreateHashAnSecure(string password)
         {
             var hashedPwCreator = new SHA0();
             var hashedPw = hashedPwCreator.Update(Encoding.ASCII.GetBytes(password)).Digest();
@@ -152,7 +151,7 @@ namespace SoftEtherApi
             securePwCreator.Update(hashedPw);
             var securePw = securePwCreator.Update(RandomFromServer).Digest();
             
-            return (hashedPw, securePw);
+            return new SoftEtherHashPair(hashedPw, securePw);
         }
     }
 }

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using SoftEtherApi.Containers;
 using SoftEtherApi.Infrastructure;
 
 namespace SoftEtherApi.SoftEtherModel
@@ -16,10 +16,10 @@ namespace SoftEtherApi.SoftEtherModel
             return !Error.HasValue;
         }
 
-        public static T Deserialize(Dictionary<string, List<object>> value)
+        public static T Deserialize(SoftEtherParameterCollection collection)
         {
-            var keyMapping = value.Keys.Select(m => (m.Replace(".", "").Replace("@", ""), m))
-                .ToDictionary(tuple => tuple.Item1.ToLower(), tuple => tuple.Item2);
+            var keyMapping = collection.Select(m => new Tuple<string, SoftEtherParameter>(m.Key.Replace(".", "").Replace("@", ""), m))
+                .ToDictionary(m => m.Item1.ToLower(), m => m.Item2);
 
             var returnVal = new T();
             var valFields = typeof(T).GetFields();
@@ -30,35 +30,35 @@ namespace SoftEtherApi.SoftEtherModel
                 if (!keyMapping.ContainsKey(keyName))
                     continue;
 
-                var val = value[keyMapping[keyName]];
+                var parameter = keyMapping[keyName];
                 var fieldType = field.FieldType;
 
                 if (!fieldType.IsArray && fieldType.GetInterface("IList") != null)
                 {
                     var tmpVal = Activator.CreateInstance(fieldType);
-                    var tmpList = tmpVal as IList;
+                    var tmpList = (IList)tmpVal;
 
                     var elementType = fieldType.GetGenericArguments()[0];
 
-                    foreach (var el in val) 
+                    foreach (var el in parameter.Value) 
                         tmpList.Add(CastValue(elementType, el));
                     
                     field.SetValue(returnVal, tmpVal);
                 }
                 else
                 {
-                    field.SetValue(returnVal, CastValue(fieldType, val.FirstOrDefault()));
+                    field.SetValue(returnVal, CastValue(fieldType, parameter.Value.FirstOrDefault()));
                 }
             }
 
             return returnVal;
         }
 
-        public static SoftEtherList<T> DeserializeMany(Dictionary<string, List<object>> value)
+        public static SoftEtherList<T> DeserializeMany(SoftEtherParameterCollection collection)
         {
-            var keyMapping = value.Keys.Select(m => (m.Replace(".", "").Replace("@", ""), m))
+            var keyMapping = collection.Select(m => new Tuple<string, SoftEtherParameter>(m.Key.Replace(".", "").Replace("@", ""), m))
                 .ToDictionary(tuple => tuple.Item1.ToLower(), tuple => tuple.Item2);
-            var elementCount = value.Values.Max(m => m.Count);
+            var elementCount = collection.Max(m => m.Value.Count);
 
             var returnVal = new SoftEtherList<T>();
             var valFields = typeof(T).GetFields();
@@ -72,17 +72,18 @@ namespace SoftEtherApi.SoftEtherModel
                     if (!keyMapping.ContainsKey(keyName))
                         continue;
 
-                    var val = value[keyMapping[keyName]];
+                    var val = keyMapping[keyName].Value;
                     var fieldType = field.FieldType;
 
                     if (!fieldType.IsArray && fieldType.GetInterface("IList") != null)
                     {
                         var tmpVal = Activator.CreateInstance(fieldType);
-                        var tmpList = tmpVal as IList;
+                        var tmpList = (IList) tmpVal;
 
                         var elementType = fieldType.GetGenericArguments()[0];
 
-                        foreach (var el in val) tmpList.Add(CastValue(elementType, el));
+                        foreach (var el in val)
+                            tmpList.Add(CastValue(elementType, el));
 
                         field.SetValue(tVal, tmpVal);
                     }

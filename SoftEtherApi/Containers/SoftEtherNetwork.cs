@@ -7,7 +7,7 @@ using System.Text;
 using SoftEtherApi.Extensions;
 using SoftEtherApi.SoftEtherModel;
 
-namespace SoftEtherApi
+namespace SoftEtherApi.Containers
 {
     public static class SoftEtherNetwork
     {

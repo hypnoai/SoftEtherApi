@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using SoftEtherApi.Containers;
 using SoftEtherApi.Extensions;
 
-namespace SoftEtherApi
+namespace SoftEtherApi.Containers
 {
     public static class SoftEtherProtocol
     {
@@ -34,28 +33,29 @@ namespace SoftEtherApi
                 writer.Write(keyBytes);
 
 
+                writer.WriteUInt32BE((uint)parameter.ValueType);
+                writer.WriteUInt32BE(Convert.ToUInt32(parameter.Value.Count));
+                
                 switch (parameter.ValueType)
                 {
-                    case "int":
+                    case SoftEtherValueType.Int:
                     {
-                        writer.WriteUInt32BE(0);
-                        writer.WriteUInt32BE(Convert.ToUInt32(parameter.Value.Count));
+                        
                         foreach (var t in parameter.Value) 
                             writer.WriteUInt32BE(Convert.ToUInt32(t));
                         break;
                     }
-                    case "int64":
+                    case SoftEtherValueType.Raw:
                     {
-                        writer.WriteUInt32BE(4);
-                        writer.WriteUInt32BE(Convert.ToUInt32(parameter.Value.Count));
-                        foreach (var t in parameter.Value) 
-                            writer.WriteUInt64BE(Convert.ToUInt64(t));
+                        foreach (var t in parameter.Value)
+                        {
+                            writer.WriteUInt32BE(Convert.ToUInt32(((byte[]) t).Length));
+                            writer.Write((byte[]) t);
+                        }
                         break;
                     }
-                    case "string":
+                    case SoftEtherValueType.String:
                     {
-                        writer.WriteUInt32BE(2);
-                        writer.WriteUInt32BE(Convert.ToUInt32(parameter.Value.Count));
                         foreach (var t in parameter.Value)
                         {
                             var tBytes = Encoding.ASCII.GetBytes((string) t);
@@ -64,10 +64,8 @@ namespace SoftEtherApi
                         }
                         break;
                     }
-                    case "ustring":
+                    case SoftEtherValueType.UnicodeString:
                     {
-                        writer.WriteUInt32BE(3);
-                        writer.WriteUInt32BE(Convert.ToUInt32(parameter.Value.Count));
                         foreach (var t in parameter.Value)
                         {
                             var tBytes = Encoding.UTF8.GetBytes((string) t);
@@ -76,76 +74,74 @@ namespace SoftEtherApi
                         }
                         break;
                     }
-                    case "raw":
-                    default:
+                    case SoftEtherValueType.Int64:
                     {
-                        writer.WriteUInt32BE(1);
-                        writer.WriteUInt32BE(Convert.ToUInt32(parameter.Value.Count));
-                        foreach (var t in parameter.Value)
-                        {
-                            writer.WriteUInt32BE(Convert.ToUInt32(((byte[]) t).Length));
-                            writer.Write((byte[]) t);
-                        }
+                        foreach (var t in parameter.Value) 
+                            writer.WriteUInt64BE(Convert.ToUInt64(t));
                         break;
                     }
+                    default:
+                        throw new ArgumentException("ValueType is not valid");
                 }
             }
 
             return memStream.ToArray();
         }
-
-        public static Dictionary<string, List<object>> Deserialize(byte[] body)
+        
+        public static SoftEtherParameterCollection Deserialize(byte[] body)
         {
             var memStream = new MemoryStream(body, false);
             var reader = new BinaryReader(memStream);
 
             var count = reader.ReadUInt32BE();
 
-            var res = new Dictionary<string, List<object>>();
+            var res = new SoftEtherParameterCollection();
             for (var i = 0; i < count; i++)
             {
                 var keyLen = reader.ReadInt32BE();
                 var key = Encoding.ASCII.GetString(reader.ReadBytesRequired(keyLen - 1));
-                var keyType = reader.ReadUInt32BE();
+                var valueType = (SoftEtherValueType)reader.ReadUInt32BE();
                 var valueCount = reader.ReadUInt32BE();
 
                 var list = new List<object>();
                 for (var j = 0; j < valueCount; j++)
                 {
-                    switch (keyType)
+                    switch (valueType)
                     {
-                        case 0:
+                        case SoftEtherValueType.Int:
                         {
                             list.Add(reader.ReadUInt32BE());
                             break;
                         }
-                        case 1:
+                        case SoftEtherValueType.Raw:
                         {
                             var strLen = reader.ReadInt32BE();
                             list.Add(reader.ReadBytesRequired(strLen));
                             break;
                         }
-                        case 2:
+                        case SoftEtherValueType.String:
                         {
                             var strLen = reader.ReadInt32BE();
                             list.Add(Encoding.ASCII.GetString(reader.ReadBytesRequired(strLen)));
                             break;
                         }
-                        case 3:
+                        case SoftEtherValueType.UnicodeString:
                         {
                             var strLen = reader.ReadInt32BE();
                             list.Add(Encoding.UTF8.GetString(reader.ReadBytesRequired(strLen)));
                             break;
                         }
-                        case 4:
+                        case SoftEtherValueType.Int64:
                         {
                             list.Add(reader.ReadUInt64BE());
                             break;
                         }
+                        default:
+                            throw new ArgumentException("ValueType is not valid");
                     }
                 }
 
-                res.Add(key, list);
+                res.Add(key, valueType, list);
             }
             return res;
         }

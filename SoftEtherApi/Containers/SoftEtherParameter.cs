@@ -7,11 +7,11 @@ namespace SoftEtherApi.Containers
     public class SoftEtherParameter
     {
         public string Key { get; }
-        public string ValueType { get; }
+        public SoftEtherValueType ValueType { get; }
         public List<object> Value { get; private set; } = new List<object>();
         public bool ValueIsArray { get; private set; } = false;
 
-        public SoftEtherParameter(string key, string valueType, object value)
+        public SoftEtherParameter(string key, SoftEtherValueType valueType, object value)
         {
             Key = key;
             ValueType = valueType;
@@ -25,7 +25,7 @@ namespace SoftEtherApi.Containers
                 Value.Add(value);
         }
         
-        public SoftEtherParameter(string key, string valueType, string value)
+        public SoftEtherParameter(string key, SoftEtherValueType valueType, string value)
         {
             Key = key;
             ValueType = valueType;
@@ -33,7 +33,7 @@ namespace SoftEtherApi.Containers
             Value.Add(value);
         }
         
-        public SoftEtherParameter(string key, string valueType, byte[] value)
+        public SoftEtherParameter(string key, SoftEtherValueType valueType, byte[] value)
         {
             Key = key;
             ValueType = valueType;
@@ -41,6 +41,10 @@ namespace SoftEtherApi.Containers
             Value.Add(value);
         }
 
+        public bool HasValues()
+        {
+            return !ValueIsNull() && Value.Count > 0;
+        }
 
         public bool ValueIsNull()
         {
@@ -49,7 +53,7 @@ namespace SoftEtherApi.Containers
 
         public void RemoveNullFromValueArray()
         {
-            if (ValueIsNull() || !ValueIsArray)
+            if (ValueIsNull())
                 return;
             
             Value = Value.Where(m => m != null).ToList();

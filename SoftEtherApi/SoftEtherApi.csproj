@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SoftEtherApi</RootNamespace>
     <AssemblyName>SoftEtherApi</AssemblyName>
-    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -38,8 +38,13 @@
   <ItemGroup>
     <Compile Include="Api\SoftEtherHub.cs" />
     <Compile Include="Api\SoftEtherServer.cs" />
+    <Compile Include="Containers\SoftEtherError.cs" />
+    <Compile Include="Containers\SoftEtherHashPair.cs" />
+    <Compile Include="Containers\SoftEtherNetwork.cs" />
     <Compile Include="Containers\SoftEtherParameter.cs" />
     <Compile Include="Containers\SoftEtherParameterCollection.cs" />
+    <Compile Include="Containers\SoftEtherProtocol.cs" />
+    <Compile Include="Containers\SoftEtherValueType.cs" />
     <Compile Include="Extensions\BinaryReaderExtensions.cs" />
     <Compile Include="Extensions\BinaryWriterExtensions.cs" />
     <Compile Include="Extensions\DeconstructExtensions.cs" />
@@ -64,7 +69,6 @@
     <Compile Include="SoftEtherModel\HubStatus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SoftEther.cs" />
-    <Compile Include="SoftEtherError.cs" />
     <Compile Include="SoftEtherModel\BaseSoftEtherModel.cs" />
     <Compile Include="SoftEtherModel\HubUser.cs" />
     <Compile Include="SoftEtherModel\HubUserList.cs" />
@@ -75,8 +79,6 @@
     <Compile Include="SoftEtherModel\ServerStatus.cs" />
     <Compile Include="SoftEtherModel\SoftEtherList.cs" />
     <Compile Include="SoftEtherModel\VirtualHostOptions.cs" />
-    <Compile Include="SoftEtherNetwork.cs" />
-    <Compile Include="SoftEtherProtocol.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

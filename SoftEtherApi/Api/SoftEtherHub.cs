@@ -170,13 +170,13 @@ namespace SoftEtherApi.Api
         public Hub Create(string name, string password, bool online, bool noAnonymousEnumUser = true,
             HubType hubType = HubType.Standalone, int maxSession = 0)
         {
-            var (hashedPw, securePw) = _softEther.CreateHashAnSecure(password);
+            var hashPair = _softEther.CreateHashAnSecure(password);
 
             var requestData = new SoftEtherParameterCollection
             {
                 {"HubName", name},
-                {"HashedPassword", hashedPw},
-                {"SecurePassword",securePw},
+                {"HashedPassword", hashPair.Hash},
+                {"SecurePassword",hashPair.Secure},
                 {"Online", online},
                 {"MaxSession", maxSession},
                 {"NoEnum", noAnonymousEnumUser},
@@ -193,8 +193,8 @@ namespace SoftEtherApi.Api
             {
                 {"HubName", hubName},
                 {"Name", name},
-                {"Realname", "ustring", realName},
-                {"Note", "ustring", note}
+                {"Realname", SoftEtherValueType.UnicodeString, realName},
+                {"Note", SoftEtherValueType.UnicodeString, note}
             };
 
             var rawData = _softEther.CallMethod("CreateGroup", requestData);
@@ -207,8 +207,8 @@ namespace SoftEtherApi.Api
             {
                 {"HubName", hubName},
                 {"Name", name},
-                {"Realname", "ustring", realName},
-                {"Note", "ustring", note}
+                {"Realname", SoftEtherValueType.UnicodeString, realName},
+                {"Note", SoftEtherValueType.UnicodeString, note}
             };
 
             var rawData = _softEther.CallMethod("SetGroup", requestData);
@@ -230,19 +230,19 @@ namespace SoftEtherApi.Api
         public HubUser CreateUser(string hubName, string name, string password, string groupName = null,
             string realName = null, string note = null, DateTime? expireTime = null)
         {
-            var (hashedPw, securePw) = _softEther.CreateHashAndNtLm(name, password);
+            var hashPair = _softEther.CreateHashAndNtLm(name, password);
 
             var requestData = new SoftEtherParameterCollection
             {
                 {"HubName", hubName},
                 {"Name", name},
                 {"GroupName", groupName},
-                {"Realname", "ustring", realName},
-                {"Note", "ustring", note},
+                {"Realname", SoftEtherValueType.UnicodeString, realName},
+                {"Note", SoftEtherValueType.UnicodeString, note},
                 {"ExpireTime", expireTime},
                 {"AuthType", 1}, //auth_type = 0 for no auth, 1 for password auth
-                {"HashedKey", hashedPw},
-                {"NtLmSecureHash", securePw}
+                {"HashedKey", hashPair.Hash},
+                {"NtLmSecureHash", hashPair.Secure}
             };
 
             var rawData = _softEther.CallMethod("CreateUser", requestData);
@@ -272,8 +272,8 @@ namespace SoftEtherApi.Api
                 {"HubName", hubName},
                 {"Name", name},
                 {"GroupName", groupName},
-                {"Realname", "ustring", realName},
-                {"Note", "ustring", note},
+                {"Realname", SoftEtherValueType.UnicodeString, realName},
+                {"Note", SoftEtherValueType.UnicodeString, note},
                 {"CreatedTime", createTime},
                 {"UpdatedTime", updatedTime},
                 {"ExpireTime", expireTime},
@@ -309,7 +309,11 @@ namespace SoftEtherApi.Api
         public HubUser SetUserPassword(string hubName, string name, string password)
         {
             var user = GetUser(hubName, name);
-            (user.HashedKey, user.NtLmSecureHash) = _softEther.CreateHashAndNtLm(name, password);
+            var hashPair = _softEther.CreateHashAndNtLm(name, password);
+            
+            user.HashedKey = hashPair.Hash;
+            user.NtLmSecureHash = hashPair.Secure;
+            
             return SetUser(hubName, user);
         }
     }
