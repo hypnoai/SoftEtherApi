@@ -1,4 +1,5 @@
 using System.Net;
+using SoftEtherApi.Model;
 
 namespace SoftEtherApi.SoftEtherModel
 {
@@ -47,7 +48,7 @@ namespace SoftEtherApi.SoftEtherModel
         public bool SaveLog;
         public bool UseDhcp;
         public bool UseNat;
-        public string DhcpPushRoutes;
+        public DhcpRouteCollection DhcpPushRoutes;
     }
 }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using SoftEtherApi.Containers;
+using SoftEtherApi.Model;
 using SoftEtherApi.SoftEtherModel;
 
 namespace SoftEtherApi.Api
@@ -73,7 +74,7 @@ namespace SoftEtherApi.Api
                 {"DhcpDomainName", options.DhcpDomainName},
                 {"SaveLog", options.SaveLog},
                 {"ApplyDhcpPushRoutes", options.ApplyDhcpPushRoutes},
-                {"DhcpPushRoutes", options.DhcpPushRoutes}
+                {"DhcpPushRoutes", options.DhcpPushRoutes.ToString()}
             };
 
             var rawData = _softEther.CallMethod("SetSecureNATOption", requestData);

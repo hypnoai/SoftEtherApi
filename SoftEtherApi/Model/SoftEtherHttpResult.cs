@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SoftEtherApi.SoftEtherModel
+namespace SoftEtherApi.Model
 {
     public class SoftEtherHttpResult
     {

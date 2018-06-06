@@ -1,4 +1,4 @@
-﻿namespace SoftEtherApi.SoftEtherModel
+﻿namespace SoftEtherApi.Model
 {
     public enum HubType
     {

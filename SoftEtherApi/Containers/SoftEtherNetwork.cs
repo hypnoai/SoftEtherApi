@@ -5,7 +5,7 @@ using System.Linq;
 using System.Net.Security;
 using System.Text;
 using SoftEtherApi.Extensions;
-using SoftEtherApi.SoftEtherModel;
+using SoftEtherApi.Model;
 
 namespace SoftEtherApi.Containers
 {

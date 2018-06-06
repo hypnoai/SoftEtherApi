@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using SoftEtherApi.Containers;
 using SoftEtherApi.Infrastructure;
+using SoftEtherApi.Model;
 
 namespace SoftEtherApi.SoftEtherModel
 {
@@ -31,25 +34,9 @@ namespace SoftEtherApi.SoftEtherModel
                 if (!keyMapping.ContainsKey(keyName))
                     continue;
 
-                var parameter = keyMapping[keyName];
-                var fieldType = field.FieldType;
+                var val = keyMapping[keyName].Value;
 
-                if (!fieldType.IsArray && fieldType.GetInterface("IList") != null)
-                {
-                    var tmpVal = Activator.CreateInstance(fieldType);
-                    var tmpList = (IList)tmpVal;
-
-                    var elementType = fieldType.GetGenericArguments()[0];
-
-                    foreach (var el in parameter.Value) 
-                        tmpList.Add(CastValue(elementType, el));
-                    
-                    field.SetValue(returnVal, tmpVal);
-                }
-                else
-                {
-                    field.SetValue(returnVal, CastValue(fieldType, parameter.Value.FirstOrDefault()));
-                }
+                SetValueForField(field, val, returnVal);
             }
 
             return returnVal;
@@ -66,7 +53,7 @@ namespace SoftEtherApi.SoftEtherModel
 
             for (var i = 0; i < elementCount; i++)
             {
-                var tVal = new T();
+                var elementVal = new T();
                 foreach (var field in valFields)
                 {
                     var keyName = field.Name.ToLower();
@@ -74,35 +61,53 @@ namespace SoftEtherApi.SoftEtherModel
                         continue;
 
                     var val = keyMapping[keyName].Value;
-                    var fieldType = field.FieldType;
-
-                    if (!fieldType.IsArray && fieldType.GetInterface("IList") != null)
-                    {
-                        var tmpVal = Activator.CreateInstance(fieldType);
-                        var tmpList = (IList) tmpVal;
-
-                        var elementType = fieldType.GetGenericArguments()[0];
-
-                        foreach (var el in val)
-                            tmpList.Add(CastValue(elementType, el));
-
-                        field.SetValue(tVal, tmpVal);
-                    }
-                    else
-                    {
-                        var el = val.Count == 1 ? val.FirstOrDefault() : val.ElementAtOrDefault(i);
-                        field.SetValue(tVal, CastValue(fieldType, el));
-                    }
+                    SetValueForField(field, val, elementVal, i);
                 }
 
-                returnVal.Elements.Add(tVal);
+                returnVal.Elements.Add(elementVal);
             }
 
             return returnVal;
         }
 
+        private static void SetValueForField(FieldInfo valueField, IReadOnlyCollection<object> rawValue, T resultValue, int i = 0)
+        {
+            var fieldType = valueField.FieldType;
+
+            if (!fieldType.IsArray && fieldType.GetInterface("IList") != null)
+            {
+                var tmpVal = Activator.CreateInstance(fieldType);
+                var tmpList = (IList) tmpVal;
+
+                var elementType = fieldType.GetGenericArguments()[0];
+
+                foreach (var el in rawValue)
+                    tmpList.Add(CastValue(elementType, el));
+
+                valueField.SetValue(resultValue, tmpVal);
+            }
+            else if (fieldType.GetInterfaces().Contains(typeof(ISoftEtherCollection)))
+            {
+                var tmpVal = Activator.CreateInstance(fieldType);
+                var tmpList = (ISoftEtherCollection) tmpVal;
+
+                foreach (var el in rawValue)
+                    tmpList.Add(el);
+
+                valueField.SetValue(resultValue, tmpVal);
+            }
+            else
+            {
+                var el = rawValue.Count == 1 ? rawValue.FirstOrDefault() : rawValue.ElementAtOrDefault(i);
+                valueField.SetValue(resultValue, CastValue(fieldType, el));
+            }
+        }
+
         private static object CastValue(Type valType, object val)
         {
+            if (valType == null)
+                return val;
+            
             if (valType == typeof(DateTime))
             {
                 return SoftEtherConverter.LongToDateTime(Convert.ToInt64(val ?? 0));

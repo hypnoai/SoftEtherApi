@@ -38,8 +38,10 @@
   <ItemGroup>
     <Compile Include="Api\SoftEtherHub.cs" />
     <Compile Include="Api\SoftEtherServer.cs" />
+    <Compile Include="Containers\ISoftEtherCollection.cs" />
     <Compile Include="Containers\SoftEtherError.cs" />
     <Compile Include="Containers\SoftEtherHashPair.cs" />
+    <Compile Include="Containers\SoftEtherList.cs" />
     <Compile Include="Containers\SoftEtherNetwork.cs" />
     <Compile Include="Containers\SoftEtherParameter.cs" />
     <Compile Include="Containers\SoftEtherParameterCollection.cs" />
@@ -49,6 +51,10 @@
     <Compile Include="Extensions\BinaryWriterExtensions.cs" />
     <Compile Include="Extensions\DeconstructExtensions.cs" />
     <Compile Include="Infrastructure\SoftEtherConverter.cs" />
+    <Compile Include="Model\DhcpRoute.cs" />
+    <Compile Include="Model\DhcpRouteCollection.cs" />
+    <Compile Include="Model\HubType.cs" />
+    <Compile Include="Model\SoftEtherHttpResult.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Infrastructure\MD4.cs" />
     <Compile Include="Infrastructure\PocoCreator.cs" />
@@ -57,8 +63,6 @@
     <Compile Include="SoftEtherModel\ConnectionInfo.cs" />
     <Compile Include="SoftEtherModel\ConnectionList.cs" />
     <Compile Include="SoftEtherModel\ConnectResult.cs" />
-    <Compile Include="SoftEtherModel\HubType.cs" />
-    <Compile Include="SoftEtherModel\SoftEtherHttpResult.cs" />
     <Compile Include="SoftEtherModel\Hub.cs" />
     <Compile Include="SoftEtherModel\HubAccessList.cs" />
     <Compile Include="SoftEtherModel\HubGroup.cs" />
@@ -77,7 +81,6 @@
     <Compile Include="SoftEtherModel\ServerCipher.cs" />
     <Compile Include="SoftEtherModel\ServerInfo.cs" />
     <Compile Include="SoftEtherModel\ServerStatus.cs" />
-    <Compile Include="SoftEtherModel\SoftEtherList.cs" />
     <Compile Include="SoftEtherModel\VirtualHostOptions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
