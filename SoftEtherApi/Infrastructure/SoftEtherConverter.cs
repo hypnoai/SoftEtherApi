@@ -21,7 +21,6 @@ namespace SoftEtherApi.Infrastructure
 
         public static IPAddress UIntToIpAddress(uint val)
         {
-            
             return new IPAddress(val);
         }
         

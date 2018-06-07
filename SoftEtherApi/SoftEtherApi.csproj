@@ -50,6 +50,8 @@
     <Compile Include="Extensions\BinaryReaderExtensions.cs" />
     <Compile Include="Extensions\BinaryWriterExtensions.cs" />
     <Compile Include="Extensions\DeconstructExtensions.cs" />
+    <Compile Include="Extensions\IpAddressExtensions.cs" />
+    <Compile Include="Infrastructure\AccessListFactory.cs" />
     <Compile Include="Infrastructure\SoftEtherConverter.cs" />
     <Compile Include="Model\AuthType.cs" />
     <Compile Include="Model\BaseSoftEtherModel.cs" />
