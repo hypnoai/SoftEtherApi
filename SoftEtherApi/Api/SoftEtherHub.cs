@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using SoftEtherApi.Containers;
 using SoftEtherApi.Model;
 using SoftEtherApi.SoftEtherModel;
@@ -37,6 +37,28 @@ namespace SoftEtherApi.Api
             var rawData = _softEther.CallMethod("GetHub", requestData);
             return Hub.Deserialize(rawData);
         }
+        
+        public SoftEtherResult EnableSecureNat(string hubName)
+        {
+            var requestData = new SoftEtherParameterCollection
+            {
+                {"HubName", hubName}
+            };
+
+            var rawData = _softEther.CallMethod("EnableSecureNAT", requestData);
+            return SoftEtherResult.Deserialize(rawData);
+        }
+        
+        public SoftEtherResult DisableSecureNat(string hubName)
+        {
+            var requestData = new SoftEtherParameterCollection
+            {
+                {"HubName", hubName}
+            };
+
+            var rawData = _softEther.CallMethod("DisableSecureNAT", requestData);
+            return SoftEtherResult.Deserialize(rawData);
+        }
 
         public VirtualHostOptions GetSecureNatOptions(string hubName)
         {
@@ -49,6 +71,16 @@ namespace SoftEtherApi.Api
             var model = VirtualHostOptions.Deserialize(rawData);
             model.RpcHubName = hubName; //Fix, as softEther clears the hubname
             return model;
+        }
+
+        public VirtualHostOptions SetSecureNatDhcpPushRoutes(string hubName, DhcpRouteCollection routes)
+        {
+            var options = GetSecureNatOptions(hubName);
+            if (!options.Valid())
+                return options;
+
+            options.DhcpPushRoutes = routes;
+            return SetSecureNatOptions(hubName, options);
         }
 
         public VirtualHostOptions SetSecureNatOptions(string hubName, VirtualHostOptions options)
