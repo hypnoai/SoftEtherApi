@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using SoftEtherApi.Containers;
 using SoftEtherApi.Model;
 using SoftEtherApi.SoftEtherModel;
@@ -160,6 +162,93 @@ namespace SoftEtherApi.Api
             };
 
             var rawData = _softEther.CallMethod("EnumAccess", requestData);
+            return HubAccessList.DeserializeMany(rawData);
+        }
+        
+        public HubAccessList AddAccessList(string hubName, HubAccessList accessList)
+        {
+            var requestData = new SoftEtherParameterCollection
+            {
+                {"HubName", hubName},
+                {"Id", accessList.Id},
+                {"Note", SoftEtherValueType.UnicodeString, accessList.Note},
+                {"Active", accessList.Active},
+                {"Priority", accessList.Priority},
+                {"Discard", accessList.Discard},
+                {"SrcIpAddress", accessList.SrcIpAddress},
+                {"SrcSubnetMask", accessList.SrcSubnetMask},
+                {"DestIpAddress", accessList.DestIpAddress},
+                {"DestSubnetMask", accessList.DestSubnetMask},
+                {"Protocol", accessList.Protocol},
+                {"SrcPortStart", accessList.SrcPortStart},
+                {"SrcPortEnd", accessList.SrcPortEnd},
+                {"DestPortStart", accessList.DestPortStart},
+                {"DestPortEnd", accessList.DestPortEnd},
+                {"SrcUsername", accessList.SrcUsername},
+                {"DestUsername", accessList.DestUsername},
+                {"CheckSrcMac", accessList.CheckSrcMac},
+                {"SrcMacAddress", accessList.SrcMacAddress},
+                {"SrcMacMask", accessList.SrcMacMask},
+                {"CheckDstMac", accessList.CheckDstMac},
+                {"DstMacAddress", accessList.DstMacAddress},
+                {"DstMacMask", accessList.DstMacMask},
+                {"CheckTcpState", accessList.CheckTcpState},
+                {"Established", accessList.Established},
+                {"Delay", accessList.Delay},
+                {"Jitter", accessList.Jitter},
+                {"Loss", accessList.Loss},
+                {"IsIPv6", accessList.IsIPv6},
+                {"UniqueId", accessList.UniqueId},
+                {"RedirectUrl", accessList.RedirectUrl}
+            };
+
+            var rawData = _softEther.CallMethod("AddAccess", requestData);
+            return HubAccessList.Deserialize(rawData);
+        }
+
+        public SoftEtherList<HubAccessList> SetAccessList(string hubName, IEnumerable<HubAccessList> accessList)
+        {
+            return SetAccessList(hubName, accessList.ToArray());
+        }
+        
+        public SoftEtherList<HubAccessList> SetAccessList(string hubName, params HubAccessList[] accessList)
+        {
+            var requestData = new SoftEtherParameterCollection
+            {
+                {"HubName", hubName},
+                {"Id", accessList.Select(m => m.Id)},
+                {"Note", SoftEtherValueType.UnicodeString, accessList.Select(m => m.Note)},
+                {"Active", accessList.Select(m => m.Active)},
+                {"Priority", accessList.Select(m => m.Priority)},
+                {"Discard", accessList.Select(m => m.Discard)},
+                {"SrcIpAddress", accessList.Select(m => m.SrcIpAddress)},
+                {"SrcSubnetMask", accessList.Select(m => m.SrcSubnetMask)},
+                {"DestIpAddress", accessList.Select(m => m.DestIpAddress)},
+                {"DestSubnetMask", accessList.Select(m => m.DestSubnetMask)},
+                {"Protocol", accessList.Select(m => m.Protocol)},
+                {"SrcPortStart", accessList.Select(m => m.SrcPortStart)},
+                {"SrcPortEnd", accessList.Select(m => m.SrcPortEnd)},
+                {"DestPortStart", accessList.Select(m => m.DestPortStart)},
+                {"DestPortEnd", accessList.Select(m => m.DestPortEnd)},
+                {"SrcUsername", accessList.Select(m => m.SrcUsername)},
+                {"DestUsername", accessList.Select(m => m.DestUsername)},
+                {"CheckSrcMac", accessList.Select(m => m.CheckSrcMac)},
+                {"SrcMacAddress", accessList.Select(m => m.SrcMacAddress)},
+                {"SrcMacMask", accessList.Select(m => m.SrcMacMask)},
+                {"CheckDstMac", accessList.Select(m => m.CheckDstMac)},
+                {"DstMacAddress", accessList.Select(m => m.DstMacAddress)},
+                {"DstMacMask", accessList.Select(m => m.DstMacMask)},
+                {"CheckTcpState", accessList.Select(m => m.CheckTcpState)},
+                {"Established", accessList.Select(m => m.Established)},
+                {"Delay", accessList.Select(m => m.Delay)},
+                {"Jitter", accessList.Select(m => m.Jitter)},
+                {"Loss", accessList.Select(m => m.Loss)},
+                {"IsIPv6", accessList.Select(m => m.IsIPv6)},
+                {"UniqueId", accessList.Select(m => m.UniqueId)},
+                {"RedirectUrl", accessList.Select(m => m.RedirectUrl)}
+            };
+
+            var rawData = _softEther.CallMethod("SetAccessList", requestData);
             return HubAccessList.DeserializeMany(rawData);
         }
 
