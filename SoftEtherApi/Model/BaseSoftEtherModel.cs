@@ -50,6 +50,15 @@ namespace SoftEtherApi.Model
         {
             var keyMapping = collection.Select(m => new Tuple<string, SoftEtherParameter>(m.Key.Replace(".", "").Replace("@", ""), m))
                 .ToDictionary(tuple => tuple.Item1.ToLower(), tuple => tuple.Item2);
+
+            if (keyMapping.ContainsKey("error") && keyMapping["error"].Value.Count <= 1)
+            {
+                return new SoftEtherList<T>
+                {
+                    Error = (SoftEtherError)Enum.ToObject(typeof(SoftEtherError), keyMapping["error"].Value[0])
+                };
+            }
+
             var elementCount = collection.Max(m => m.Value.Count);
 
             var returnVal = new SoftEtherList<T>();
