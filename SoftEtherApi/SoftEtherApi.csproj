@@ -53,6 +53,7 @@
     <Compile Include="Extensions\IpAddressExtensions.cs" />
     <Compile Include="Infrastructure\AccessListFactory.cs" />
     <Compile Include="Infrastructure\SoftEtherConverter.cs" />
+    <Compile Include="Model\AccessDevice.cs" />
     <Compile Include="Model\AuthType.cs" />
     <Compile Include="Model\BaseSoftEtherModel.cs" />
     <Compile Include="Model\DhcpRoute.cs" />

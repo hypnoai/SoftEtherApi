@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using SoftEtherApi.Extensions;
+using SoftEtherApi.Model;
 using SoftEtherApi.SoftEtherModel;
 
 namespace SoftEtherApi.Infrastructure
@@ -108,7 +110,37 @@ namespace SoftEtherApi.Infrastructure
             return accessList;
         }
 
-        public static List<HubAccessList> CreateNatOnly(
+        public static List<HubAccessList> CreateAccessToDevice(uint priority, AccessDevice accessDevice,
+            IPAddress secureNat, IPAddress secureNatSubnet)
+        {
+            return new List<HubAccessList>
+            {
+                new HubAccessList
+                {
+                    Active = true,
+                    Priority = priority,
+                    SrcIpAddress = accessDevice.Ip,
+                    SrcSubnetMask = IPAddress.Broadcast,
+                    DestIpAddress = secureNat.GetNetworkAddress(secureNatSubnet),
+                    DestSubnetMask = secureNatSubnet,
+                    Discard = false,
+                    Note = $"AccessTo-{accessDevice.Name}"
+                },
+                new HubAccessList
+                {
+                    Active = true,
+                    Priority = priority,
+                    SrcIpAddress = secureNat.GetNetworkAddress(secureNatSubnet),
+                    SrcSubnetMask = secureNatSubnet,
+                    DestIpAddress = accessDevice.Ip,
+                    DestSubnetMask = IPAddress.Broadcast,
+                    Discard = false,
+                    Note = $"ReverseAccessTo-{accessDevice.Name}"
+                }
+            };
+        }
+
+        public static List<HubAccessList> CreateSecureNatNetworkOnly(
             IPAddress network, IPAddress networkSubnet,
             IPAddress secureNatGateway, IPAddress secureNatSubnet)
         {
@@ -121,6 +153,22 @@ namespace SoftEtherApi.Infrastructure
                 CreateNetworkToSecureNat(5000, network, networkSubnet, secureNatGateway, secureNatSubnet),
                 CreateBlockAll(6000)
             };
+        }
+        
+        public static List<HubAccessList> CreateSecureNatDevicesOnly(IPAddress secureNatGateway, IPAddress secureNatSubnet, 
+            params AccessDevice[] accessDevices)
+        {
+            var result = new List<HubAccessList>
+            {
+                CreateAllowDhcp(1000),
+                CreateGatewayToSecureNat(2000, secureNatGateway, secureNatSubnet),
+                CreateSecureNatToGateway(3000, secureNatGateway, secureNatSubnet)
+            };
+            
+            result.AddRange(accessDevices.SelectMany((m, index) => CreateAccessToDevice(4000 + (uint)index, m, secureNatGateway, secureNatSubnet)));
+            
+            result.Add(CreateBlockAll(6000));
+            return result;
         }
     }
 }
