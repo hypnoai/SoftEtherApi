@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,11 +12,16 @@ namespace SoftEtherApi.Model
 {
     public abstract class BaseSoftEtherModel<T> where T : BaseSoftEtherModel<T>, new()
     {
-        public SoftEtherError? Error;
+        public SoftEtherError Error = SoftEtherError.NoError;
 
         public bool Valid()
         {
-            return !Error.HasValue;
+            return Error == SoftEtherError.NoError;
+        }
+        
+        public bool NotValid()
+        {
+            return !Valid();
         }
 
         public static T Deserialize(SoftEtherParameterCollection collection)
@@ -106,6 +111,9 @@ namespace SoftEtherApi.Model
         {
             if (valType == null)
                 return val;
+
+            //If the type is Nullable, get the underlying type
+            valType = Nullable.GetUnderlyingType(valType) ?? valType;
             
             if (valType == typeof(DateTime))
             {
@@ -132,9 +140,9 @@ namespace SoftEtherApi.Model
                 return Convert.ToBoolean(val);
             }
 
-            if (valType == typeof(SoftEtherError?))
+            if (valType.IsEnum)
             {
-                return Enum.ToObject(typeof(SoftEtherError), val);
+                return Enum.ToObject(valType, val);
             }
             
             if (valType == typeof(HubType))

@@ -5,7 +5,7 @@ namespace SoftEtherApi.SoftEtherModel
 {
     public class HubUser : BaseSoftEtherModel<HubUser>
     {
-        public uint  AuthType;
+        public AuthType  AuthType;
         public DateTime CreatedTime;
         public DateTime ExpireTime;
         public string GroupName;

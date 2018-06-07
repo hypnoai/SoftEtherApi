@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using SoftEtherApi.Containers;
 using SoftEtherApi.Model;
 using SoftEtherApi.SoftEtherModel;
@@ -273,7 +273,7 @@ namespace SoftEtherApi.Api
                 {"Realname", SoftEtherValueType.UnicodeString, realName},
                 {"Note", SoftEtherValueType.UnicodeString, note},
                 {"ExpireTime", expireTime},
-                {"AuthType", 1}, //auth_type = 0 for no auth, 1 for password auth
+                {"AuthType", (int)AuthType.Password},
                 {"HashedKey", hashPair.Hash},
                 {"NtLmSecureHash", hashPair.Secure}
             };
@@ -296,7 +296,7 @@ namespace SoftEtherApi.Api
             DateTime updatedTime,
             DateTime expireTime,
             uint numLogin,
-            uint authType,
+            AuthType authType,
             byte[] hashedPw,
             byte[] securePw)
         {
@@ -311,7 +311,7 @@ namespace SoftEtherApi.Api
                 {"UpdatedTime", updatedTime},
                 {"ExpireTime", expireTime},
                 {"NumLogin", numLogin},
-                {"AuthType", authType}, //auth_type = 0 for no auth, 1 for password auth
+                {"AuthType", (int)authType},
                 {"HashedKey", hashedPw},
                 {"NtLmSecureHash", securePw}
             };
