@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using SoftEtherApi.SoftEtherModel;
+using SoftEtherApi.Model;
 
 namespace SoftEtherApi.Containers
 {

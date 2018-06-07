@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -51,6 +51,7 @@
     <Compile Include="Extensions\BinaryWriterExtensions.cs" />
     <Compile Include="Extensions\DeconstructExtensions.cs" />
     <Compile Include="Infrastructure\SoftEtherConverter.cs" />
+    <Compile Include="Model\BaseSoftEtherModel.cs" />
     <Compile Include="Model\DhcpRoute.cs" />
     <Compile Include="Model\DhcpRouteCollection.cs" />
     <Compile Include="Model\HubType.cs" />
@@ -73,7 +74,6 @@
     <Compile Include="SoftEtherModel\HubStatus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SoftEther.cs" />
-    <Compile Include="SoftEtherModel\BaseSoftEtherModel.cs" />
     <Compile Include="SoftEtherModel\HubUser.cs" />
     <Compile Include="SoftEtherModel\HubUserList.cs" />
     <Compile Include="SoftEtherModel\PortListenerList.cs" />

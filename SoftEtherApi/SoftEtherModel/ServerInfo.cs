@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftEtherApi.Model;
 
 namespace SoftEtherApi.SoftEtherModel
 {

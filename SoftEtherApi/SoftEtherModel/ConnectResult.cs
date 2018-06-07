@@ -1,3 +1,5 @@
+using SoftEtherApi.Model;
+
 namespace SoftEtherApi.SoftEtherModel
 {
     public class ConnectResult : BaseSoftEtherModel<ConnectResult>

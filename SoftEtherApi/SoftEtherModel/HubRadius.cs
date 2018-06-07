@@ -1,3 +1,5 @@
+using SoftEtherApi.Model;
+
 namespace SoftEtherApi.SoftEtherModel
 {
     public class HubRadius : BaseSoftEtherModel<HubRadius>

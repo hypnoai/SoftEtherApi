@@ -1,4 +1,5 @@
 using System.Security.Cryptography.X509Certificates;
+using SoftEtherApi.Model;
 
 namespace SoftEtherApi.SoftEtherModel
 {
