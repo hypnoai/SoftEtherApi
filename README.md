@@ -118,7 +118,7 @@ using (var softEther = new SoftEther(ip, port))
     var authResult = softEther.Authenticate(pw);
 
     var network = "192.168.178.0";
-    var networkGateway = "255.255.255.0";
+    var networkSubnet = "255.255.255.0";
     var hubName = "testHub";
     
     var natOnline = softEther.HubApi.EnableSecureNat(hubName);
@@ -127,13 +127,13 @@ using (var softEther = new SoftEther(ip, port))
     var natOptions = softEther.HubApi.GetSecureNatOptions(hubName);
     var pushRoutesResult = softEther.HubApi.SetSecureNatDhcpPushRoutes(hubName, new DhcpRouteCollection
     {
-        {network, networkGateway, natOptions.DhcpGatewayAddress.ToString()}
+        {network, networkSubnet, natOptions.DhcpGatewayAddress.ToString()}
     });
     
     //Replace accessList 
     //Allow access only from secureNat to network. VPN-Clients cannot talk with eachother and access outside of the network is denied
     var networkAclList = softEther.HubApi.SetAccessList(hubName,
-        AccessListFactory.AllowNetworkOnly(network, networkGateway,
+        AccessListFactory.AllowNetworkOnly(network, networkSubnet,
             natOptions.DhcpGatewayAddress, natOptions.DhcpSubnetMask));
 }
 ```
@@ -150,7 +150,7 @@ using (var softEther = new SoftEther(ip, port))
     var authResult = softEther.Authenticate(pw);
 
     var network = "192.168.178.0";
-    var networkGateway = "255.255.255.0";
+    var networkSubnet = "255.255.255.0";
     var hubName = "testHub";
     
     var natOnline = softEther.HubApi.EnableSecureNat(hubName);
@@ -159,7 +159,7 @@ using (var softEther = new SoftEther(ip, port))
     var natOptions = softEther.HubApi.GetSecureNatOptions(hubName);
     var pushRoutesResult = softEther.HubApi.SetSecureNatDhcpPushRoutes(hubName, new DhcpRouteCollection
     {
-        {network, networkGateway, natOptions.DhcpGatewayAddress.ToString()}
+        {network, networkSubnet, natOptions.DhcpGatewayAddress.ToString()}
     });
     
     //Replace accesslist with DevicesOnly
