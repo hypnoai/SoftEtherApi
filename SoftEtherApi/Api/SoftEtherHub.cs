@@ -267,6 +267,18 @@ namespace SoftEtherApi.Api
             var rawData = _softEther.CallMethod("EnumSession", requestData);
             return HubSessionList.DeserializeMany(rawData);
         }
+        
+        public SoftEtherResult DisconnectSession(string hubName, string sessionName)
+        {
+            var requestData = new SoftEtherParameterCollection
+            {
+                {"HubName", hubName},
+                {"Name", sessionName}
+            };
+
+            var rawData = _softEther.CallMethod("DeleteSession", requestData);
+            return SoftEtherResult.Deserialize(rawData);
+        }
 
         public SoftEtherList<HubUserList> GetUserList(string hubName)
         {
