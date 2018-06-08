@@ -9,7 +9,14 @@ namespace SoftEtherApi.Infrastructure
 {
     public static class AccessListFactory
     {
-        public static HubAccessList CreateAllowDhcp(uint priority, string name = "DHCP")
+        private const uint DhcpPriority = 1000;
+        private const uint GatewayNatPriority = 2000;
+        private const uint NetworkNatPriority = 3000;
+        public const uint DenyDevicesPriority = 4000;
+        public const uint AllowDevicesPriority = 5000;
+        public const uint CatchAllPriority = 10000;
+        
+        public static HubAccessList Dhcp(uint priority, string name = "DHCP", bool denyAccess = false)
         {
             var accessList = new HubAccessList
             {
@@ -20,98 +27,27 @@ namespace SoftEtherApi.Infrastructure
                 Protocol = 17,
                 DestPortStart = 67,
                 DestPortEnd = 68,
-                Discard = false,
+                Discard = denyAccess,
                 Note = name
             };
             return accessList;
         }
 
-        public static HubAccessList CreateGatewayToSecureNat(uint priority, IPAddress gateway, IPAddress gatewaySubnet,
-            string name = "Gateway to NAT")
+        public static HubAccessList CatchAll(uint priority, string name = "Catch ALL", bool denyAccess = false)
         {
             var accessList = new HubAccessList
             {
                 Active = true,
                 Priority = priority,
-                SrcIpAddress = gateway,
-                SrcSubnetMask = IPAddress.Broadcast,
-                DestIpAddress = gateway.GetNetworkAddress(gatewaySubnet),
-                DestSubnetMask = gatewaySubnet,
-                Discard = false,
+                Discard = denyAccess,
                 Note = name
             };
             return accessList;
         }
 
-        public static HubAccessList CreateSecureNatToGateway(uint priority, IPAddress gateway, IPAddress gatewaySubnet,
-            string name = "NAT to Gateway")
-        {
-            var accessList = new HubAccessList
-            {
-                Active = true,
-                Priority = priority,
-                SrcIpAddress = gateway.GetNetworkAddress(gatewaySubnet),
-                SrcSubnetMask = gatewaySubnet,
-                DestIpAddress = gateway,
-                DestSubnetMask = IPAddress.Broadcast,
-                Discard = false,
-                Note = name
-            };
-            return accessList;
-        }
-
-        public static HubAccessList CreateSecureNatToNetwork(uint priority,
-            IPAddress secureNat, IPAddress secureNatSubnet,
-            IPAddress network, IPAddress networkSubnet,
-            string name = "NAT to Network")
-        {
-            var accessList = new HubAccessList
-            {
-                Active = true,
-                Priority = priority,
-                SrcIpAddress = secureNat.GetNetworkAddress(secureNatSubnet),
-                SrcSubnetMask = secureNatSubnet,
-                DestIpAddress = network.GetNetworkAddress(networkSubnet),
-                DestSubnetMask = networkSubnet,
-                Discard = false,
-                Note = name
-            };
-            return accessList;
-        }
-
-        public static HubAccessList CreateNetworkToSecureNat(uint priority,
-            IPAddress network, IPAddress networkSubnet,
-            IPAddress secureNat, IPAddress secureNatSubnet,
-            string name = "Network to NAT")
-        {
-            var accessList = new HubAccessList
-            {
-                Active = true,
-                Priority = priority,
-                SrcIpAddress = network.GetNetworkAddress(networkSubnet),
-                SrcSubnetMask = networkSubnet,
-                DestIpAddress = secureNat.GetNetworkAddress(secureNatSubnet),
-                DestSubnetMask = secureNatSubnet,
-                Discard = false,
-                Note = name
-            };
-            return accessList;
-        }
-
-        public static HubAccessList CreateBlockAll(uint priority, string name = "Block ALL")
-        {
-            var accessList = new HubAccessList
-            {
-                Active = true,
-                Priority = priority,
-                Discard = true,
-                Note = name
-            };
-            return accessList;
-        }
-
-        public static List<HubAccessList> CreateAccessToDevice(uint priority, AccessDevice accessDevice,
-            IPAddress secureNat, IPAddress secureNatSubnet)
+        public static IEnumerable<HubAccessList> AccessToDevice(uint priority, string name,
+            IPAddress device,
+            IPAddress network, IPAddress networkSubnet, bool denyAccess = false)
         {
             return new List<HubAccessList>
             {
@@ -119,55 +55,94 @@ namespace SoftEtherApi.Infrastructure
                 {
                     Active = true,
                     Priority = priority,
-                    SrcIpAddress = accessDevice.Ip,
+                    SrcIpAddress = device,
                     SrcSubnetMask = IPAddress.Broadcast,
-                    DestIpAddress = secureNat.GetNetworkAddress(secureNatSubnet),
-                    DestSubnetMask = secureNatSubnet,
-                    Discard = false,
-                    Note = $"AccessTo-{accessDevice.Name}"
+                    DestIpAddress = network.GetNetworkAddress(networkSubnet),
+                    DestSubnetMask = networkSubnet,
+                    Discard = denyAccess,
+                    Note = $"AccessFromDevice-{name}"
                 },
                 new HubAccessList
                 {
                     Active = true,
                     Priority = priority,
-                    SrcIpAddress = secureNat.GetNetworkAddress(secureNatSubnet),
-                    SrcSubnetMask = secureNatSubnet,
-                    DestIpAddress = accessDevice.Ip,
+                    SrcIpAddress = network.GetNetworkAddress(networkSubnet),
+                    SrcSubnetMask = networkSubnet,
+                    DestIpAddress = device,
                     DestSubnetMask = IPAddress.Broadcast,
-                    Discard = false,
-                    Note = $"ReverseAccessTo-{accessDevice.Name}"
+                    Discard = denyAccess,
+                    Note = $"AccessToDevice-{name}"
+                }
+            };
+        }
+        
+        public static IEnumerable<HubAccessList> AccessToNetwork(uint priority, string name,
+            IPAddress network, IPAddress networkSubnet,
+            IPAddress otherNetwork, IPAddress otherNetworkSubnet, bool denyAccess = false)
+        {
+            return new List<HubAccessList>
+            {
+                new HubAccessList
+                {
+                    Active = true,
+                    Priority = priority,
+                    SrcIpAddress = network.GetNetworkAddress(networkSubnet),
+                    SrcSubnetMask = networkSubnet,
+                    DestIpAddress = otherNetwork.GetNetworkAddress(otherNetworkSubnet),
+                    DestSubnetMask = otherNetworkSubnet,
+                    Discard = denyAccess,
+                    Note = $"AccessFromNetwork-{name}"
+                },
+                new HubAccessList
+                {
+                    Active = true,
+                    Priority = priority,
+                    SrcIpAddress = otherNetwork.GetNetworkAddress(otherNetworkSubnet),
+                    SrcSubnetMask = otherNetworkSubnet,
+                    DestIpAddress = network.GetNetworkAddress(networkSubnet),
+                    DestSubnetMask = networkSubnet,
+                    Discard = denyAccess,
+                    Note = $"AccessToNetwork-{name}"
                 }
             };
         }
 
-        public static List<HubAccessList> CreateSecureNatNetworkOnly(
+        public static List<HubAccessList> AllowNetworkOnly(
+            string network, string networkSubnet,
+            IPAddress secureNatGateway, IPAddress secureNatSubnet)
+        {
+            return AllowNetworkOnly(IPAddress.Parse(network), IPAddress.Parse(networkSubnet), secureNatGateway,
+                secureNatSubnet);
+        }
+
+        public static List<HubAccessList> AllowNetworkOnly(
             IPAddress network, IPAddress networkSubnet,
             IPAddress secureNatGateway, IPAddress secureNatSubnet)
         {
-            return new List<HubAccessList>
+            var result = new List<HubAccessList>
             {
-                CreateAllowDhcp(1000),
-                CreateGatewayToSecureNat(2000, secureNatGateway, secureNatSubnet),
-                CreateSecureNatToGateway(3000, secureNatGateway, secureNatSubnet),
-                CreateSecureNatToNetwork(4000, secureNatGateway, secureNatSubnet, network, networkSubnet),
-                CreateNetworkToSecureNat(5000, network, networkSubnet, secureNatGateway, secureNatSubnet),
-                CreateBlockAll(6000)
+                Dhcp(DhcpPriority),
+                CatchAll(CatchAllPriority, denyAccess: true)
             };
+            
+            result.AddRange(AccessToDevice(GatewayNatPriority, "NatGateway", secureNatGateway, secureNatGateway, secureNatSubnet));
+            result.AddRange(AccessToNetwork(NetworkNatPriority, "NAT-Network", network, networkSubnet, secureNatGateway, secureNatSubnet));
+
+            return result;
         }
-        
-        public static List<HubAccessList> CreateSecureNatDevicesOnly(IPAddress secureNatGateway, IPAddress secureNatSubnet, 
+
+        public static List<HubAccessList> AllowDevicesOnly(IPAddress secureNatGateway, IPAddress secureNatSubnet, 
             params AccessDevice[] accessDevices)
         {
             var result = new List<HubAccessList>
             {
-                CreateAllowDhcp(1000),
-                CreateGatewayToSecureNat(2000, secureNatGateway, secureNatSubnet),
-                CreateSecureNatToGateway(3000, secureNatGateway, secureNatSubnet)
+                Dhcp(DhcpPriority),
+                CatchAll(CatchAllPriority, denyAccess: true)
             };
             
-            result.AddRange(accessDevices.SelectMany((m, index) => CreateAccessToDevice(4000 + (uint)index, m, secureNatGateway, secureNatSubnet)));
+            result.AddRange(AccessToDevice(GatewayNatPriority, "NatGateway", secureNatGateway, secureNatGateway, secureNatSubnet));
+            result.AddRange(accessDevices.SelectMany(m => AccessToDevice(AllowDevicesPriority, m.Name, m.Ip, secureNatGateway, secureNatSubnet)));
             
-            result.Add(CreateBlockAll(6000));
             return result;
         }
     }

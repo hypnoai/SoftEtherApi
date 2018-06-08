@@ -164,6 +164,11 @@ namespace SoftEtherApi.Api
             var rawData = _softEther.CallMethod("EnumAccess", requestData);
             return HubAccessList.DeserializeMany(rawData);
         }
+
+        public List<HubAccessList> AddAccessList(string hubName, IEnumerable<HubAccessList> accessList)
+        {
+            return accessList.Select(m => AddAccessList(hubName, m)).ToList();
+        }
         
         public HubAccessList AddAccessList(string hubName, HubAccessList accessList)
         {
