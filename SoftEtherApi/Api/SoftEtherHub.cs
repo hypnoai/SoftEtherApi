@@ -347,7 +347,7 @@ namespace SoftEtherApi.Api
             {
                 {"HubName", name},
                 {"HashedPassword", hashPair.Hash},
-                {"SecurePassword",hashPair.Secure},
+                {"SecurePassword",hashPair.SaltedHash},
                 {"Online", online},
                 {"MaxSession", maxSession},
                 {"NoEnum", noAnonymousEnumUser},
@@ -401,7 +401,7 @@ namespace SoftEtherApi.Api
         public HubUser CreateUser(string hubName, string name, string password, string groupName = null,
             string realName = null, string note = null, DateTime? expireTime = null)
         {
-            var hashPair = _softEther.CreateHashAndNtLm(name, password);
+            var hashPair = _softEther.CreateUserHashAndNtLm(name, password);
 
             var requestData = new SoftEtherParameterCollection
             {
@@ -413,7 +413,7 @@ namespace SoftEtherApi.Api
                 {"ExpireTime", expireTime},
                 {"AuthType", (int)AuthType.Password},
                 {"HashedKey", hashPair.Hash},
-                {"NtLmSecureHash", hashPair.Secure}
+                {"NtLmSecureHash", hashPair.SaltedHash}
             };
 
             var rawData = _softEther.CallMethod("CreateUser", requestData);
@@ -480,10 +480,10 @@ namespace SoftEtherApi.Api
         public HubUser SetUserPassword(string hubName, string name, string password)
         {
             var user = GetUser(hubName, name);
-            var hashPair = _softEther.CreateHashAndNtLm(name, password);
+            var hashPair = _softEther.CreateUserHashAndNtLm(name, password);
             
             user.HashedKey = hashPair.Hash;
-            user.NtLmSecureHash = hashPair.Secure;
+            user.NtLmSecureHash = hashPair.SaltedHash;
             
             return SetUser(hubName, user);
         }

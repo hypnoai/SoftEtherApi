@@ -57,6 +57,12 @@ namespace SoftEtherApi
 
         public AuthResult Authenticate(string password, string hubName = null)
         {
+            var passwordHash = CreatePasswordHash(password);
+            return Authenticate(passwordHash, hubName);
+        }
+
+        public AuthResult Authenticate(byte[] passwordHash, string hubName = null)
+        {
             if (RandomFromServer == null)
                 return new AuthResult {Error = SoftEtherError.ConnectFailed};
 
@@ -71,9 +77,8 @@ namespace SoftEtherApi
             if (!string.IsNullOrWhiteSpace(hubName))
                 authPayload.Add("hubname", hubName);
 
-            var hashPair = CreateHashAnSecure(password);
-
-            authPayload.Add("secure_password", hashPair.Secure);
+            var securePassword = CreateSaltedHash(passwordHash, RandomFromServer);
+            authPayload.Add("secure_password", securePassword);
 
             var serializedAuthPayload = SoftEtherProtocol.Serialize(authPayload);
             _socket.SendHttpRequest("POST", "/vpnsvc/vpn.cgi", serializedAuthPayload,
@@ -131,27 +136,51 @@ namespace SoftEtherApi
             return response;
         }
         
-        public SoftEtherHashPair CreateHashAndNtLm(string name, string password)
+        public SoftEtherHashPair CreateUserHashAndNtLm(string name, string password)
         {
-            var hashedPwCreator = new SHA0();
-            hashedPwCreator.Update(Encoding.ASCII.GetBytes(password));
-            var hashedPw = hashedPwCreator.Update(Encoding.ASCII.GetBytes(name.ToUpper())).Digest();
+            var hashedPw = CreateUserPasswordHash(name, password);
+            var ntlmHash = CreateNtlmHash(password);
+            return new SoftEtherHashPair(hashedPw, ntlmHash);
+        }
 
-            var securePwCreator = new MD4();
-            var securePw = securePwCreator.Update(Encoding.Unicode.GetBytes(password)).Digest();
-            return new SoftEtherHashPair(hashedPw, securePw);
+        public static byte[] CreateUserPasswordHash(string username, string password)
+        {
+            var hashCreator = new SHA0();
+            hashCreator.Update(Encoding.ASCII.GetBytes(password));
+            var hashedPw = hashCreator.Update(Encoding.ASCII.GetBytes(username.ToUpper())).Digest();
+            return hashedPw;
+        }
+
+        public static byte[] CreateNtlmHash(string password)
+        {
+            var hashCreator = new MD4();
+            var ntmlHash = hashCreator.Update(Encoding.Unicode.GetBytes(password)).Digest();
+            return ntmlHash;
         }
         
         public SoftEtherHashPair CreateHashAnSecure(string password)
         {
-            var hashedPwCreator = new SHA0();
-            var hashedPw = hashedPwCreator.Update(Encoding.ASCII.GetBytes(password)).Digest();
-
-            var securePwCreator = new SHA0();
-            securePwCreator.Update(hashedPw);
-            var securePw = securePwCreator.Update(RandomFromServer).Digest();
+            var hashedPw = CreatePasswordHash(password);
+            var saltedPw = CreateSaltedHash(hashedPw, RandomFromServer);
             
-            return new SoftEtherHashPair(hashedPw, securePw);
+            return new SoftEtherHashPair(hashedPw, saltedPw);
+        }
+
+        public static byte[] CreatePasswordHash(string password)
+        {
+            var hashCreator = new SHA0();
+            var hashedPw = hashCreator.Update(Encoding.ASCII.GetBytes(password)).Digest();
+            
+            return hashedPw;
+        }
+        
+        public static byte[] CreateSaltedHash(byte[] passwordHash, byte[] salt)
+        {
+            var hashCreator = new SHA0();
+            hashCreator.Update(passwordHash);
+            var saltedPw = hashCreator.Update(salt).Digest();
+            
+            return saltedPw;
         }
     }
 }

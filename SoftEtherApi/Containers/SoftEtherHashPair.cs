@@ -3,12 +3,12 @@
     public struct SoftEtherHashPair
     {
         public byte[] Hash { get; set; }
-        public byte[] Secure { get; set; }
+        public byte[] SaltedHash { get; set; }
 
-        public SoftEtherHashPair(byte[] hash, byte[] secure)
+        public SoftEtherHashPair(byte[] hash, byte[] saltedHash)
         {
             Hash = hash;
-            Secure = secure;
+            SaltedHash = saltedHash;
         }
     }
 }
