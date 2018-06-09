@@ -127,8 +127,9 @@ namespace SoftEtherApi.Containers
                         }
                         case SoftEtherValueType.UnicodeString:
                         {
+                            //softether adds a additional 0-byte to every string. For future sake, just trim it instead of reading a byte less
                             var strLen = reader.ReadInt32BE();
-                            list.Add(Encoding.UTF8.GetString(reader.ReadBytesRequired(strLen)));
+                            list.Add(Encoding.UTF8.GetString(reader.ReadBytesRequired(strLen)).TrimEnd('\0'));
                             break;
                         }
                         case SoftEtherValueType.Int64:

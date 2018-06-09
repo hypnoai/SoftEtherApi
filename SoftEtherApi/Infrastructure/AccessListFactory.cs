@@ -16,6 +16,15 @@ namespace SoftEtherApi.Infrastructure
         public const uint AllowDevicesPriority = 5000;
         public const uint CatchAllPriority = 10000;
         
+        private const string AccessFromDeviceString = "AccessFromDevice";
+        private const string AccessToDeviceString = "AccessToDevice";
+        
+        private const string AccessFromNetworkString = "AccessFromNetwork";
+        private const string AccessToNetworkString = "AccessToNetwork";
+
+        private const string NatGatewayString = "NatGateway";
+        private const string NatNetworkString = "NAT-Network";
+        
         public static HubAccessList Dhcp(uint priority, string name = "DHCP", bool denyAccess = false)
         {
             var accessList = new HubAccessList
@@ -60,7 +69,7 @@ namespace SoftEtherApi.Infrastructure
                     DestIpAddress = network.GetNetworkAddress(networkSubnet),
                     DestSubnetMask = networkSubnet,
                     Discard = denyAccess,
-                    Note = $"AccessFromDevice-{name}"
+                    Note = $"{AccessFromDeviceString}-{name}"
                 },
                 new HubAccessList
                 {
@@ -71,7 +80,7 @@ namespace SoftEtherApi.Infrastructure
                     DestIpAddress = device,
                     DestSubnetMask = IPAddress.Broadcast,
                     Discard = denyAccess,
-                    Note = $"AccessToDevice-{name}"
+                    Note = $"{AccessToDeviceString}-{name}"
                 }
             };
         }
@@ -91,7 +100,7 @@ namespace SoftEtherApi.Infrastructure
                     DestIpAddress = otherNetwork.GetNetworkAddress(otherNetworkSubnet),
                     DestSubnetMask = otherNetworkSubnet,
                     Discard = denyAccess,
-                    Note = $"AccessFromNetwork-{name}"
+                    Note = $"{AccessFromNetworkString}-{name}"
                 },
                 new HubAccessList
                 {
@@ -102,9 +111,32 @@ namespace SoftEtherApi.Infrastructure
                     DestIpAddress = network.GetNetworkAddress(networkSubnet),
                     DestSubnetMask = networkSubnet,
                     Discard = denyAccess,
-                    Note = $"AccessToNetwork-{name}"
+                    Note = $"{AccessToNetworkString}-{name}"
                 }
             };
+        }
+
+        public static IEnumerable<HubAccessList> FilterDevicesOnly(IEnumerable<HubAccessList> accessLists)
+        {
+            return accessLists.Where(m => m.Priority == AllowDevicesPriority || m.Priority == DenyDevicesPriority).ToList();
+        }
+        
+        public static IEnumerable<IPAddress> GetDevicesOnlyIps(IEnumerable<HubAccessList> accessLists)
+        {
+            var filtered = FilterDevicesOnly(accessLists);
+            return filtered.Where(m => m.Note.StartsWith(AccessFromDeviceString))
+                .Select(m => m.SrcIpAddress).ToList();
+        }
+
+        public static List<HubAccessList> ReplaceDevices(IEnumerable<HubAccessList> accessLists, params AccessDevice[] accessDevices)
+        {
+            //we need the gatewayAccess rule
+            var gatewayAccess = accessLists.Where(m => !string.IsNullOrWhiteSpace(m.Note))
+                .Single(m => m.Note.StartsWith(AccessFromDeviceString) && m.Note.EndsWith(NatGatewayString));
+            
+            var newList = accessLists.Except(FilterDevicesOnly(accessLists)).ToList();
+            newList.AddRange(accessDevices.SelectMany(m => AccessToDevice(AllowDevicesPriority, m.Name, m.Ip, gatewayAccess.SrcIpAddress, gatewayAccess.DestSubnetMask)));
+            return newList;
         }
 
         public static List<HubAccessList> AllowNetworkOnly(
@@ -125,8 +157,8 @@ namespace SoftEtherApi.Infrastructure
                 CatchAll(CatchAllPriority, denyAccess: true)
             };
             
-            result.AddRange(AccessToDevice(GatewayNatPriority, "NatGateway", secureNatGateway, secureNatGateway, secureNatSubnet));
-            result.AddRange(AccessToNetwork(NetworkNatPriority, "NAT-Network", network, networkSubnet, secureNatGateway, secureNatSubnet));
+            result.AddRange(AccessToDevice(GatewayNatPriority, NatGatewayString, secureNatGateway, secureNatGateway, secureNatSubnet));
+            result.AddRange(AccessToNetwork(NetworkNatPriority, NatNetworkString, network, networkSubnet, secureNatGateway, secureNatSubnet));
 
             return result;
         }
@@ -140,7 +172,7 @@ namespace SoftEtherApi.Infrastructure
                 CatchAll(CatchAllPriority, denyAccess: true)
             };
             
-            result.AddRange(AccessToDevice(GatewayNatPriority, "NatGateway", secureNatGateway, secureNatGateway, secureNatSubnet));
+            result.AddRange(AccessToDevice(GatewayNatPriority, NatGatewayString, secureNatGateway, secureNatGateway, secureNatSubnet));
             result.AddRange(accessDevices.SelectMany(m => AccessToDevice(AllowDevicesPriority, m.Name, m.Ip, secureNatGateway, secureNatSubnet)));
             
             return result;
