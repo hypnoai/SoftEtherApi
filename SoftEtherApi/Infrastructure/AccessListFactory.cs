@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using SoftEtherApi.Extensions;
@@ -16,11 +17,11 @@ namespace SoftEtherApi.Infrastructure
         public const uint AllowDevicesPriority = 5000;
         public const uint CatchAllPriority = 10000;
         
-        private const string AccessFromDeviceString = "AccessFromDevice";
-        private const string AccessToDeviceString = "AccessToDevice";
+        private const string AccessFromDevicePrefix = "AccessFromDevice-";
+        private const string AccessToDevicePrefix = "AccessToDevice-";
         
-        private const string AccessFromNetworkString = "AccessFromNetwork";
-        private const string AccessToNetworkString = "AccessToNetwork";
+        private const string AccessFromNetworkPrefix = "AccessFromNetwork-";
+        private const string AccessToNetworkPrefix = "AccessToNetwork-";
 
         private const string NatGatewayString = "NatGateway";
         private const string NatNetworkString = "NAT-Network";
@@ -69,7 +70,7 @@ namespace SoftEtherApi.Infrastructure
                     DestIpAddress = network.GetNetworkAddress(networkSubnet),
                     DestSubnetMask = networkSubnet,
                     Discard = denyAccess,
-                    Note = $"{AccessFromDeviceString}-{name}"
+                    Note = $"{AccessFromDevicePrefix}{name}"
                 },
                 new HubAccessList
                 {
@@ -80,7 +81,7 @@ namespace SoftEtherApi.Infrastructure
                     DestIpAddress = device,
                     DestSubnetMask = IPAddress.Broadcast,
                     Discard = denyAccess,
-                    Note = $"{AccessToDeviceString}-{name}"
+                    Note = $"{AccessToDevicePrefix}{name}"
                 }
             };
         }
@@ -100,7 +101,7 @@ namespace SoftEtherApi.Infrastructure
                     DestIpAddress = otherNetwork.GetNetworkAddress(otherNetworkSubnet),
                     DestSubnetMask = otherNetworkSubnet,
                     Discard = denyAccess,
-                    Note = $"{AccessFromNetworkString}-{name}"
+                    Note = $"{AccessFromNetworkPrefix}{name}"
                 },
                 new HubAccessList
                 {
@@ -111,7 +112,7 @@ namespace SoftEtherApi.Infrastructure
                     DestIpAddress = network.GetNetworkAddress(networkSubnet),
                     DestSubnetMask = networkSubnet,
                     Discard = denyAccess,
-                    Note = $"{AccessToNetworkString}-{name}"
+                    Note = $"{AccessToNetworkPrefix}{name}"
                 }
             };
         }
@@ -121,18 +122,18 @@ namespace SoftEtherApi.Infrastructure
             return accessLists.Where(m => m.Priority == AllowDevicesPriority || m.Priority == DenyDevicesPriority).ToList();
         }
         
-        public static IEnumerable<IPAddress> GetDevicesOnlyIps(IEnumerable<HubAccessList> accessLists)
+        public static IEnumerable<Tuple<IPAddress, string>> GetDevicesOnly(IEnumerable<HubAccessList> accessLists)
         {
             var filtered = FilterDevicesOnly(accessLists);
-            return filtered.Where(m => m.Note.StartsWith(AccessFromDeviceString))
-                .Select(m => m.SrcIpAddress).ToList();
+            return filtered.Where(m => m.Note.StartsWith(AccessFromDevicePrefix))
+                .Select(m => new Tuple<IPAddress, string>(m.SrcIpAddress, m.Note.Substring(AccessFromDevicePrefix.Length))).ToList();
         }
 
         public static List<HubAccessList> ReplaceDevices(IEnumerable<HubAccessList> accessLists, params AccessDevice[] accessDevices)
         {
             //we need the gatewayAccess rule
             var gatewayAccess = accessLists.Where(m => !string.IsNullOrWhiteSpace(m.Note))
-                .Single(m => m.Note.StartsWith(AccessFromDeviceString) && m.Note.EndsWith(NatGatewayString));
+                .Single(m => m.Note.StartsWith(AccessFromDevicePrefix) && m.Note.EndsWith(NatGatewayString));
             
             var newList = accessLists.Except(FilterDevicesOnly(accessLists)).ToList();
             newList.AddRange(accessDevices.SelectMany(m => AccessToDevice(AllowDevicesPriority, m.Name, m.Ip, gatewayAccess.SrcIpAddress, gatewayAccess.DestSubnetMask)));
