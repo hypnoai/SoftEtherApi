@@ -268,6 +268,18 @@ namespace SoftEtherApi.Api
             return HubSessionList.DeserializeMany(rawData);
         }
         
+        public HubSessionStatus GetSessionStatus(string hubName, string sessionName)
+        {
+            var requestData = new SoftEtherParameterCollection
+            {
+                {"HubName", hubName},
+                {"Name", sessionName}
+            };
+
+            var rawData = _softEther.CallMethod("GetSessionStatus", requestData);
+            return HubSessionStatus.Deserialize(rawData);
+        }
+        
         public SoftEtherResult DisconnectSession(string hubName, string sessionName)
         {
             var requestData = new SoftEtherParameterCollection
