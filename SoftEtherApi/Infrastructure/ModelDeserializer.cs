@@ -15,8 +15,8 @@ namespace SoftEtherApi.Infrastructure
         public static string FilterKeyName(string val)
         {
             return val.Replace(".", "")
-                .Replace("@", "")
-                .Replace(":", "").Trim();
+                .Replace("@", "_")
+                .Replace(":", "_").Trim();
         }
 
         public static Dictionary<string, SoftEtherParameter> CreateKeyMapping(SoftEtherParameterCollection collection)

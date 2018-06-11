@@ -12,9 +12,9 @@ namespace SoftEtherApi.SoftEtherModel
         public string Hostname;
         public string HubName;
         public IPAddress  Ip;
-        public byte[] Ipipv6_array;
-        public uint  Ipipv6_bool;
-        public uint  Ipipv6_scope_id;
+        public byte[] Ip_ipv6_array;
+        public uint  Ip_ipv6_bool;
+        public uint  Ip_ipv6_scope_id;
         public bool  IsDormant;
         public bool  IsDormantEnabled;
         public ulong LastCommDormant;

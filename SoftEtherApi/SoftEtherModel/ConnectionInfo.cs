@@ -12,9 +12,9 @@ namespace SoftEtherApi.SoftEtherModel
         public DateTime ConnectedTime;
         public string Hostname;
         public IPAddress  Ip;
-        public byte[] Ipipv6_array;
-        public uint  Ipipv6_bool;
-        public uint  Ipipv6_scope_id;
+        public byte[] Ip_ipv6_array;
+        public uint  Ip_ipv6_bool;
+        public uint  Ip_ipv6_scope_id;
         public string Name;
         public uint  Port;
         public uint  ServerBuild;

@@ -44,20 +44,20 @@ namespace SoftEtherApi.SoftEtherModel
         
         public bool  IsIPv6 = false;
         public byte[] DestIpAddress6 = new byte[16];
-        public byte[] DestIpAddressipv6_array = new byte[16];
-        public bool  DestIpAddressipv6_bool;
-        public uint  DestIpAddressipv6_scope_id;
+        public byte[] DestIpAddress_ipv6_array = new byte[16];
+        public bool  DestIpAddress_ipv6_bool;
+        public uint  DestIpAddress_ipv6_scope_id;
         public byte[] DestSubnetMask6 = new byte[16];
-        public byte[] DestSubnetMaskipv6_array = new byte[16];
-        public bool  DestSubnetMaskipv6_bool;
-        public uint  DestSubnetMaskipv6_scope_id;
+        public byte[] DestSubnetMask_ipv6_array = new byte[16];
+        public bool  DestSubnetMask_ipv6_bool;
+        public uint  DestSubnetMask_ipv6_scope_id;
         public byte[] SrcIpAddress6 = new byte[16];
-        public byte[] SrcIpAddressipv6_array = new byte[16];
-        public bool  SrcIpAddressipv6_bool;
-        public uint  SrcIpAddressipv6_scope_id;
+        public byte[] SrcIpAddress_ipv6_array = new byte[16];
+        public bool  SrcIpAddress_ipv6_bool;
+        public uint  SrcIpAddress_ipv6_scope_id;
         public byte[] SrcSubnetMask6 = new byte[16];
-        public byte[] SrcSubnetMaskipv6_array = new byte[16];
-        public bool  SrcSubnetMaskipv6_bool;
-        public uint  SrcSubnetMaskipv6_scope_id;
+        public byte[] SrcSubnetMask_ipv6_array = new byte[16];
+        public bool  SrcSubnetMask_ipv6_bool;
+        public uint  SrcSubnetMask_ipv6_scope_id;
     }
 }
