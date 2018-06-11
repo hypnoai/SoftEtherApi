@@ -8,8 +8,8 @@ namespace SoftEtherApi.SoftEtherModel
         public string HubName;
         public HubType  HubType;
         public uint  MaxSession;
-        public uint  NoEnum;
-        public uint  Online;
+        public bool  NoEnum;
+        public bool  Online;
         public byte[] SecurePassword;
     }
 }

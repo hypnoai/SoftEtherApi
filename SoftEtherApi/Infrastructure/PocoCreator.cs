@@ -1,15 +1,15 @@
 ﻿using System;
 using System.CodeDom;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Microsoft.CSharp;
+using SoftEtherApi.Containers;
 
 namespace SoftEtherApi.Infrastructure
 {
-    public class PocoCreator
+    public static class PocoCreator
     {
-        public static void GenerateSourceFile(string className, Dictionary<string, List<object>> list,
+        public static void GenerateSourceFile(string className, SoftEtherParameterCollection list,
             bool containsMany = false)
         {
             var fileBuffer = new StringBuilder();
@@ -24,7 +24,7 @@ namespace SoftEtherApi.Infrastructure
             var compiler = new CSharpCodeProvider();
             foreach (var el in list)
             {
-                var fieldName = el.Key.Replace(".", "").Replace("@", "").Trim();
+                var fieldName = ModelDeserializer.FilterKeyName(el.Key);
                 var fieldType = el.Value[0].GetType();
                 var fieldTypeName = compiler.GetTypeOutput(new CodeTypeReference(fieldType));
 
