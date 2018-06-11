@@ -1,13 +1,14 @@
 using System;
+using SoftEtherApi.Infrastructure;
 using SoftEtherApi.Model;
 
 namespace SoftEtherApi.SoftEtherModel
 {
     public class HubUserList : BaseSoftEtherModel<HubUserList>
     {
-        public uint  AuthType;
-        public uint  DenyAccess;
-        public ulong Expires;
+        public AuthType  AuthType;
+        public bool  DenyAccess;
+        public DateTime Expires;
         public ulong ExRecvBroadcastBytes;
         public ulong ExRecvBroadcastCount;
         public ulong ExRecvUnicastBytes;
@@ -18,12 +19,15 @@ namespace SoftEtherApi.SoftEtherModel
         public ulong ExSendUnicastCount;
         public string GroupName;
         public string HubName;
-        public uint  IsExpiresFilled;
-        public uint  IsTrafficFilled;
+        public bool  IsExpiresFilled;
+        public bool  IsTrafficFilled;
         public DateTime LastLoginTime;
         public string Name;
         public string Note;
         public uint  NumLogin;
         public string Realname;
+
+        //Fix as IsExpiresFilled is always true
+        public bool HasExpires => Expires != SoftEtherConverter.LocalEpoch;
     }
 }
