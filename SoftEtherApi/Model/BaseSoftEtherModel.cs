@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Reflection;
-using System.Security.Cryptography.X509Certificates;
-using SoftEtherApi.Containers;
+﻿using SoftEtherApi.Containers;
 using SoftEtherApi.Infrastructure;
 
 namespace SoftEtherApi.Model
@@ -29,9 +22,9 @@ namespace SoftEtherApi.Model
             return ModelDeserializer.Deserialize<T>(collection);
         }
 
-        public static SoftEtherList<T> DeserializeMany(SoftEtherParameterCollection collection)
+        public static SoftEtherList<T> DeserializeMany(SoftEtherParameterCollection collection, bool moreThanOne = true)
         {
-            return ModelDeserializer.DeserializeMany<T>(collection);
+            return ModelDeserializer.DeserializeMany<T>(collection, moreThanOne);
         }
     }
 }

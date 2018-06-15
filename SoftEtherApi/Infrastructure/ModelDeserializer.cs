@@ -46,7 +46,7 @@ namespace SoftEtherApi.Infrastructure
             return returnVal;
         }
 
-        public static SoftEtherList<T> DeserializeMany<T>(SoftEtherParameterCollection collection) where T : BaseSoftEtherModel<T>, new()
+        public static SoftEtherList<T> DeserializeMany<T>(SoftEtherParameterCollection collection, bool moreThanOne) where T : BaseSoftEtherModel<T>, new()
         {
             var keyMapping = CreateKeyMapping(collection);
 
@@ -61,6 +61,11 @@ namespace SoftEtherApi.Infrastructure
             var elementCount = collection.Max(m => m.Value.Count);
 
             var returnVal = new SoftEtherList<T>();
+            
+            //if we expect more than one property to be filled but only get one
+            if (!moreThanOne || collection.Count <= 1)
+                return returnVal;
+            
             var valFields = typeof(T).GetFields();
 
             for (var i = 0; i < elementCount; i++)

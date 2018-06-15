@@ -86,6 +86,17 @@ namespace SoftEtherApi.Infrastructure
             };
         }
         
+        public static AccessDevice DeviceToAccess(HubAccessList device)
+        {
+            if(device.Note.StartsWith(AccessFromDevicePrefix))
+                return new AccessDevice(device.SrcIpAddress, device.Note.Substring(AccessFromDevicePrefix.Length));
+            
+            if(device.Note.StartsWith(AccessToDevicePrefix))
+                return new AccessDevice(device.DestIpAddress, device.Note.Substring(AccessToDevicePrefix.Length));
+
+            return null;
+        }
+        
         public static IEnumerable<HubAccessList> AccessToNetwork(uint priority, string name,
             IPAddress network, IPAddress networkSubnet,
             IPAddress otherNetwork, IPAddress otherNetworkSubnet, bool denyAccess = false)
@@ -137,6 +148,33 @@ namespace SoftEtherApi.Infrastructure
             
             var newList = accessLists.Except(FilterDevicesOnly(accessLists)).ToList();
             newList.AddRange(accessDevices.SelectMany(m => AccessToDevice(AllowDevicesPriority, m.Name, m.Ip, gatewayAccess.SrcIpAddress, gatewayAccess.DestSubnetMask)));
+            return newList;
+        }
+        
+        public static List<HubAccessList> AppendDevices(IEnumerable<HubAccessList> accessLists, params AccessDevice[] accessDevices)
+        {
+            //we need the gatewayAccess rule
+            var gatewayAccess = accessLists.Where(m => !string.IsNullOrWhiteSpace(m.Note))
+                .Single(m => m.Note.StartsWith(AccessFromDevicePrefix) && m.Note.EndsWith(NatGatewayString));
+            
+            var newList = accessLists.ToList();
+            newList.AddRange(accessDevices.SelectMany(m => AccessToDevice(AllowDevicesPriority, m.Name, m.Ip, gatewayAccess.SrcIpAddress, gatewayAccess.DestSubnetMask)));
+            return newList;
+        }
+
+        public static List<HubAccessList> RemoveDevices(IEnumerable<HubAccessList> accessLists, params AccessDevice[] accessDevices)
+        {
+            var devices = FilterDevicesOnly(accessLists)
+                .Select(m => new Tuple<HubAccessList, AccessDevice>(m, DeviceToAccess(m))).ToList();
+
+            var removeDevices = devices
+                .Where(m => accessDevices.Any(u => m.Item2.Ip.ToString() == u.Ip.ToString() && m.Item2.Name == u.Name))
+                .Select(m => m.Item1)
+                .GroupBy(m => m.Note) //Only take one of the same kind (multiple devices could have the same ip and name)
+                .Select(m => m.First())
+                .ToList();
+
+            var newList = accessLists.Except(removeDevices).ToList();
             return newList;
         }
 
