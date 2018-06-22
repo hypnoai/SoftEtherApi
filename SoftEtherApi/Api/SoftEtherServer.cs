@@ -35,6 +35,27 @@ namespace SoftEtherApi.Api
             var rawData = _softEther.CallMethod("GetServerCert");
             return ServerCert.Deserialize(rawData);
         }
+        
+        public L2tpSettings GetL2tpSettings()
+        {
+            var rawData = _softEther.CallMethod("GetIPsecServices");
+            return L2tpSettings.Deserialize(rawData);
+        }
+        
+        public L2tpSettings SetL2tpSettings(L2tpSettings settings)
+        {
+            var requestData = new SoftEtherParameterCollection
+            {
+                {"L2TP_Raw", settings.L2TP_Raw},
+                {"L2TP_IPsec", settings.L2TP_IPsec},
+                {"EtherIP_IPsec", settings.EtherIP_IPsec},
+                {"L2TP_DefaultHub", settings.L2TP_DefaultHub},
+                {"IPsec_Secret", settings.IPsec_Secret}
+            };
+            
+            var rawData = _softEther.CallMethod("SetIPsecServices", requestData);
+            return L2tpSettings.Deserialize(rawData);
+        }
 
         public ServerCipher GetCipher()
         {
