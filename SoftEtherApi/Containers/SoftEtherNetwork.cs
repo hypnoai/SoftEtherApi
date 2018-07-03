@@ -29,7 +29,7 @@ namespace SoftEtherApi.Containers
             foreach (var el in headers) 
                 header += $"{el.Key}: {el.Value}\r\n";
 
-            if (!header.Contains("Content-Length"))
+            if (!headers.ContainsKey("Content-Length"))
                 header += $"Content-Length: {body.Length}\r\n";
 
             socket.Write(Encoding.ASCII.GetBytes($"{header}\r\n"));
