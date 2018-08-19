@@ -1,6 +1,12 @@
 # SoftEtherApi
 C# .net API to remote control SoftEther VPN Server
 
+# nuget
+https://www.nuget.org/packages/SoftEtherApi/
+``` nuget
+Install-Package SoftEtherApi
+```
+
 # Examples
 
 ## Program.cs
