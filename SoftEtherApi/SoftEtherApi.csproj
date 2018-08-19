@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{12AFFA5D-357D-476B-A4FB-1926A64FA000}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SoftEtherApi</RootNamespace>
     <AssemblyName>SoftEtherApi</AssemblyName>
@@ -61,7 +61,6 @@
     <Compile Include="Model\DhcpRouteCollection.cs" />
     <Compile Include="Model\HubType.cs" />
     <Compile Include="Model\SoftEtherHttpResult.cs" />
-    <Compile Include="Program.cs" />
     <Compile Include="Infrastructure\MD4.cs" />
     <Compile Include="Infrastructure\PocoCreator.cs" />
     <Compile Include="Infrastructure\SHA0.cs" />
