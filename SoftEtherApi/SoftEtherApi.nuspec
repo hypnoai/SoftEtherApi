@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>hoppler</authors>
+    <owners>hoppler</owners>
+    <licenseUrl>https://github.com/hoppler/SoftEtherApi/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/hoppler/SoftEtherApi</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>C# .net API to remote control SoftEther VPN Server</description>
+    <releaseNotes>Initial Release</releaseNotes>
+    <copyright>Copyright 2018</copyright>
+    <tags>SoftEther SoftEtherVPN RemoteControl administrate</tags>
+  </metadata>
+</package>

@@ -5,9 +5,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("SoftEtherApi")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("C# .net API to remote control SoftEther VPN Server")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("hoppler")]
 [assembly: AssemblyProduct("SoftEtherApi")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]
