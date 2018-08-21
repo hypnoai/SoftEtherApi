@@ -7,6 +7,10 @@ https://www.nuget.org/packages/SoftEtherApi/
 Install-Package SoftEtherApi
 ```
 
+# Common Issues
+## Connection could not be established
+Under Windows change the default "Encryption Algorithm Name" in SoftEther ServerManager from RC4-MD5 to something like AES128-SHA or AES256-SHA256. Windows does not allow SSL connections with RC4 anymore see https://github.com/hoppler/SoftEtherApi/issues/3
+
 # Examples
 
 ## Program.cs
