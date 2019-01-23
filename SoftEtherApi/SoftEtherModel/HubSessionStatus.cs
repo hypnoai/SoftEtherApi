@@ -10,7 +10,7 @@ namespace SoftEtherApi.SoftEtherModel
         public bool Active;
         public string CipherName;
         public string ClientHostname;
-        public uint ClientIpAddress;
+        public IPAddress ClientIpAddress;
         public byte[] ClientIpAddress6;
         public byte[] ClientIpAddress_ipv6_array;
         public bool ClientIpAddress_ipv6_bool;
@@ -80,7 +80,7 @@ namespace SoftEtherApi.SoftEtherModel
         public bool policy_Ver3;
         public uint policy_VLanId;
         public string ProxyHostname;
-        public uint ProxyIpAddress;
+        public IPAddress ProxyIpAddress;
         public byte[] ProxyIpAddress6;
         public byte[] ProxyIpAddress_ipv6_array;
         public bool ProxyIpAddress_ipv6_bool;

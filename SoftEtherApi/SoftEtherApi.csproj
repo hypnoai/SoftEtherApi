@@ -70,9 +70,13 @@
     <Compile Include="SoftEtherModel\ConnectResult.cs" />
     <Compile Include="SoftEtherModel\Hub.cs" />
     <Compile Include="SoftEtherModel\HubAccessList.cs" />
+    <Compile Include="SoftEtherModel\HubDhcp.cs" />
     <Compile Include="SoftEtherModel\HubGroup.cs" />
+    <Compile Include="SoftEtherModel\HubIpAddress.cs" />
     <Compile Include="SoftEtherModel\HubList.cs" />
     <Compile Include="SoftEtherModel\HubLog.cs" />
+    <Compile Include="SoftEtherModel\HubMacAddress.cs" />
+    <Compile Include="SoftEtherModel\HubNat.cs" />
     <Compile Include="SoftEtherModel\HubRadius.cs" />
     <Compile Include="SoftEtherModel\HubSessionList.cs" />
     <Compile Include="SoftEtherModel\HubSessionStatus.cs" />
@@ -83,8 +87,10 @@
     <Compile Include="SoftEtherModel\HubUserList.cs" />
     <Compile Include="SoftEtherModel\L2tpSettings.cs" />
     <Compile Include="SoftEtherModel\PortListenerList.cs" />
+    <Compile Include="SoftEtherModel\SecureNatStatus.cs" />
     <Compile Include="SoftEtherModel\ServerCert.cs" />
     <Compile Include="SoftEtherModel\ServerCipher.cs" />
+    <Compile Include="SoftEtherModel\ServerEthernetDevice.cs" />
     <Compile Include="SoftEtherModel\ServerInfo.cs" />
     <Compile Include="SoftEtherModel\ServerStatus.cs" />
     <Compile Include="SoftEtherModel\SoftEtherResult.cs" />

@@ -71,7 +71,10 @@ namespace SoftEtherApi.Api
 
             var rawData = _softEther.CallMethod("GetSecureNATOption", requestData);
             var model = VirtualHostOptions.Deserialize(rawData);
-            model.RpcHubName = hubName; //Fix, as softEther clears the hubname
+            
+            if (string.IsNullOrEmpty(model.RpcHubName))
+                model.RpcHubName = hubName; //Fix, as softEther clears the hubname
+            
             return model;
         }
 
@@ -278,6 +281,89 @@ namespace SoftEtherApi.Api
 
             var rawData = _softEther.CallMethod("GetSessionStatus", requestData);
             return HubSessionStatus.Deserialize(rawData);
+        }
+        
+        public SoftEtherList<HubMacAddress> GetMacAddressList(string hubName)
+        {
+            var requestData = new SoftEtherParameterCollection
+            {
+                {"HubName", hubName}
+            };
+
+            var rawData = _softEther.CallMethod("EnumMacTable", requestData);
+            return HubMacAddress.DeserializeMany(rawData);
+        }
+        
+        public SoftEtherResult DeleteMacAddress(string hubName, uint macAddressKey)
+        {
+            var requestData = new SoftEtherParameterCollection
+            {
+                {"HubName", hubName},
+                {"Key", macAddressKey}
+            };
+
+            var rawData = _softEther.CallMethod("DeleteMacTable", requestData);
+            return SoftEtherResult.Deserialize(rawData);
+        }
+        
+        public SoftEtherList<HubIpAddress> GetIpAddressList(string hubName)
+        {
+            var requestData = new SoftEtherParameterCollection
+            {
+                {"HubName", hubName}
+            };
+
+            var rawData = _softEther.CallMethod("EnumIpTable", requestData);
+            return HubIpAddress.DeserializeMany(rawData);
+        }
+        
+        public SoftEtherResult DeleteIpAddress(string hubName, uint ipAddressKey)
+        {
+            var requestData = new SoftEtherParameterCollection
+            {
+                {"HubName", hubName},
+                {"Key", ipAddressKey}
+            };
+
+            var rawData = _softEther.CallMethod("DeleteIpTable", requestData);
+            return SoftEtherResult.Deserialize(rawData);
+        }
+        
+        public SoftEtherList<HubNat> GetNatList(string hubName)
+        {
+            var requestData = new SoftEtherParameterCollection
+            {
+                {"HubName", hubName}
+            };
+
+            var rawData = _softEther.CallMethod("EnumNAT", requestData);
+            return HubNat.DeserializeMany(rawData);
+        }
+        
+        public SoftEtherList<HubDhcp> GetDhcpList(string hubName)
+        {
+            var requestData = new SoftEtherParameterCollection
+            {
+                {"HubName", hubName}
+            };
+
+            var rawData = _softEther.CallMethod("EnumDHCP", requestData);
+            return HubDhcp.DeserializeMany(rawData);
+        }
+        
+        public SecureNatStatus GetSecureNatStatus(string hubName)
+        {
+            var requestData = new SoftEtherParameterCollection
+            {
+                {"HubName", hubName}
+            };
+
+            var rawData = _softEther.CallMethod("GetSecureNATStatus", requestData);
+            var result = SecureNatStatus.Deserialize(rawData);
+            if (string.IsNullOrEmpty(result.HubName))
+                result.HubName = hubName; //field is not set by softEther, its a bug
+            
+            return result;
         }
         
         public SoftEtherResult DisconnectSession(string hubName, string sessionName)

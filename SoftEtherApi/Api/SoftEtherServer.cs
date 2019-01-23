@@ -23,6 +23,18 @@ namespace SoftEtherApi.Api
             var rawData = _softEther.CallMethod("GetServerStatus");
             return ServerStatus.Deserialize(rawData);
         }
+        
+        public SoftEtherList<ServerEthernetDevice> GetEthernetDeviceList()
+        {
+            var rawData = _softEther.CallMethod("EnumEthernet");
+            return ServerEthernetDevice.DeserializeMany(rawData);
+        }
+        
+        public SoftEtherResult RebootServer()
+        {
+            var rawData = _softEther.CallMethod("RebootServer");
+            return SoftEtherResult.Deserialize(rawData);
+        }
 
         public SoftEtherList<PortListenerList> GetPortListenerList()
         {
