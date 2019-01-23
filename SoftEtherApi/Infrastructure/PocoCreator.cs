@@ -15,7 +15,7 @@ namespace SoftEtherApi.Infrastructure
             var fileBuffer = new StringBuilder();
             fileBuffer.AppendLine(@"using System;");
             fileBuffer.AppendLine();
-            fileBuffer.AppendLine(@"namespace SoftetherApi.SoftEtherModel");
+            fileBuffer.AppendLine(@"namespace SoftEtherApi.SoftEtherModel");
             fileBuffer.AppendLine(@"{");
             fileBuffer.AppendLine($@"    public class {className} : BaseSoftEtherModel<{className}>");
             fileBuffer.AppendLine(@"    {");
